@@ -33,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -70,6 +71,7 @@ import kotlin.math.abs
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
+
 
 
 @Composable
@@ -277,12 +279,17 @@ fun PasoBodySecante() {
     ) {
         Text(
             text = "Avanza a tu propio ritmo",
-            color = colorScheme.onBackground,
-            style = TextStyle(
-                fontSize = 20.sp,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.headlineSmall.copy(
                 fontWeight = FontWeight.Bold
-            )
+            ),
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+                .fillMaxWidth(),
+            textAlign = TextAlign.Center
         )
+
+
         val f = remember { mutableStateOf("") }
         val x0 = remember { mutableStateOf("") }
         val x1 = remember { mutableStateOf("") }
@@ -294,29 +301,49 @@ fun PasoBodySecante() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(8.dp)
         ) {
-            Column {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
                 Text(
                     text = "1. Ingrese la función",
-                    textAlign = TextAlign.Justify,
-                    fontWeight = FontWeight.Bold,
-                    color = colorScheme.onBackground,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
                     text = "Ejemplo de una función bien formada:",
-                    color = colorScheme.onBackground,
-                    textAlign = TextAlign.Justify
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium
                 )
+
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "f(x) = 2 * sin(x) + log(x, 10) - 3*x^2 + pi",
-                    modifier = Modifier.fillMaxWidth(),
-                    color = colorScheme.onBackground,
-                    textAlign = TextAlign.Center
-                )
+
+                Surface(
+                    tonalElevation = 2.dp,
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "f(x) = 2*sin(x) + log(x, 10) − 3*(x^2) + pi",
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Medium
+                        ),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
+
         }
 
         OutlinedTextField(
@@ -330,26 +357,52 @@ fun PasoBodySecante() {
         )
 
         // Sección 2: Ingreso de parámetros
-        Card(
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFEFEFEF)),
-            modifier = Modifier.padding(vertical = 8.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
-            Text(
-                text = buildAnnotatedString {
-                    append("2. Ingrese ")
-                    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("x₀, x₁")
-                    }
-                    append(", número máximo de iteraciones y una tolerancia. El algoritmo finaliza si llega al máximo de iteraciones o si el error relativo es menor o igual a la tolerancia:\n\n")
-                    withStyle(SpanStyle(fontFamily = FontFamily.Monospace, fontSize = 16.sp)) {
-                        append("|xₙ₊₁ - xₙ| / |xₙ₊₁| < tolerancia")
-                    }
-                },
-                color = colorScheme.onBackground,
-                textAlign = TextAlign.Start
-            )
-        }
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(8.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            ) {
+                Text(
+                    text = buildAnnotatedString {
+                        append("2. Ingrese ")
+                        withStyle(
+                            style = SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            append("x₀, x₁")
+                        }
+                        append(", número máximo de iteraciones y una tolerancia. El algoritmo finaliza si se alcanza el máximo de iteraciones o si el error relativo es menor o igual a la tolerancia:\n\n")
+                        withStyle(
+                            style = SpanStyle(
+                                fontFamily = FontFamily.Monospace,
+                                fontSize = 16.sp,
+                                background = MaterialTheme.colorScheme.surfaceVariant,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        ) {
+                            append("|xₙ₊₁ − xₙ| / |xₙ₊₁| < tolerancia")
+                        }
+                    },
+                    modifier = Modifier.padding(16.dp),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Start,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
+        }
 
         Row(
             modifier = Modifier
@@ -662,7 +715,7 @@ fun metodoSecantePaso(
         return null to "División por cero: f(x0) y f(x1) son iguales."
     }
 
-    val x2 = x1 - fx1 * (x1 - x0) / (fx1 - fx0)
+    val x2 = x1 - (fx1 * (x1 - x0) / (fx1 - fx0))
     val error = abs(x2 - x1) / abs(x2)
 
     val resultado = ResultadoSecante(

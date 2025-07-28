@@ -3,6 +3,7 @@ package com.example.mathsus.ui.methods.bisectionMethod
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,10 +23,20 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -48,11 +60,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mathsus.ui.features.nav_menu_bisection.ResultadoBisection
+import com.example.mathsus.ui.features.nav_menu_secante.ResultadoSecante
 import com.example.mathsus_ia.ui.methods.secanteMethod.CurvedBorderText
 import com.example.mathsus_ia.ui.methods.secanteMethod.evaluarFuncion
 import io.github.jesusgurrute.mathsus_ia.R
 import com.example.mathsus_ia.ui.methods.bisectionMethod.Bisection
+import com.example.mathsus_ia.ui.methods.secanteMethod.formatearValor
+import com.google.android.libraries.intelligence.acceleration.Analytics
 import kotlin.math.abs
+
+// CLASE DE DATOS CORREGIDA
+data class ResultadoBisectionCorregida(
+    val iteracion: Int,
+    val a: Double,
+    val b: Double,
+    val c: Double, // punto medio actual
+    val previousC: Double, // punto medio anterior
+    val errorRelativo: Double // error relativo calculado
+)
 
 @Composable
 fun BodyBisection() {
@@ -207,13 +232,6 @@ fun BodyBisection() {
             }
         }
         if (bandera1.value.isEmpty()) {
-            /*
-            Text(
-                text = "Al llenar todas las casillas, oprima el boton 'calcular'",
-                color = Color.Black,
-                modifier = Modifier.padding(16.dp)
-            )
-             */
 
         } else {
             Box(
@@ -232,11 +250,11 @@ fun BodyBisection() {
     }
 }
 
-
 @SuppressLint("DefaultLocale")
 @Composable
 fun PasoBodyBisection() {
     val colorScheme = MaterialTheme.colorScheme
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -248,13 +266,16 @@ fun PasoBodyBisection() {
     ) {
         Text(
             text = "Avanza a tu propio ritmo",
-            color = colorScheme.onBackground,
-            style = TextStyle(
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+                .fillMaxWidth(),
+            textAlign = TextAlign.Center
         )
+
         val funcion = remember { mutableStateOf("") }
         val a = remember { mutableStateOf("") }
         val b = remember { mutableStateOf("") }
@@ -263,34 +284,54 @@ fun PasoBodyBisection() {
         val bandera = remember { mutableStateOf("") }
         val context = LocalContext.current
 
-
+        // UI de entrada de datos (mismo código que tenías)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(8.dp)
         ) {
-            Column {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
                 Text(
                     text = "1. Ingrese la función",
-                    textAlign = TextAlign.Justify,
-                    fontWeight = FontWeight.Bold,
-                    color = colorScheme.onBackground,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
                     text = "Ejemplo de una función bien formada:",
-                    color = colorScheme.onBackground,
-                    textAlign = TextAlign.Justify
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium
                 )
+
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "f(x) = 2 * sin(x) + log(x, 10) - 3*x^2 + pi",
-                    modifier = Modifier.fillMaxWidth(),
-                    color = colorScheme.onBackground,
-                    textAlign = TextAlign.Center
-                )
+
+                Surface(
+                    tonalElevation = 2.dp,
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "f(x) = 2*sin(x) + log(x, 10) − 3*(x^2) + pi",
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Medium
+                        ),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
+
         OutlinedTextField(
             label = { Text(text = "Ingrese la función") },
             value = funcion.value,
@@ -301,20 +342,40 @@ fun PasoBodyBisection() {
             shape = RoundedCornerShape(size = 8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp) // Agrega un margen lateral si es necesario
+                .padding(horizontal = 16.dp)
         )
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(
-                text = "2. Este método requiere un intervalo [a,b] donde la función sea continua y exista un cambio de signo. Además, un valor de error y máximo de iteraciones que permite finalizar el proceso.",
-                color = colorScheme.onBackground,
-                textAlign = TextAlign.Justify
-            )
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.cardElevation(8.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            ) {
+                Text(
+                    text = "2. Este método necesita un intervalo [a, b] donde la función sea continua y cambie de signo. También se debe definir un valor de tolerancia y un número máximo de iteraciones para detener el proceso.",
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Justify,
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             OutlinedTextField(
                 label = { Text(text = "a") },
                 value = a.value,
@@ -323,15 +384,13 @@ fun PasoBodyBisection() {
                     keyboardType = KeyboardType.Number
                 ),
                 onValueChange = { newValue ->
-                    // Primero reemplazamos las comas por puntos
                     val processedValue = newValue.replace(',', '.')
-                    // Luego verificamos si el valor resultante es un número decimal válido
                     if (processedValue.isEmpty() || processedValue.matches(Regex("^-?\\d*\\.?\\d*$"))) {
                         a.value = processedValue
                     }
                 },
                 shape = RoundedCornerShape(size = 8.dp),
-                modifier = Modifier.size(width = 80.dp, height = 60.dp)
+                modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(8.dp))
             OutlinedTextField(
@@ -342,19 +401,26 @@ fun PasoBodyBisection() {
                     keyboardType = KeyboardType.Number
                 ),
                 onValueChange = { newValue ->
-                    // Primero reemplazamos las comas por puntos
                     val processedValue = newValue.replace(',', '.')
-                    // Luego verificamos si el valor resultante es un número decimal válido
                     if (processedValue.isEmpty() || processedValue.matches(Regex("^-?\\d*\\.?\\d*$"))) {
                         b.value = processedValue
                     }
                 },
                 shape = RoundedCornerShape(size = 8.dp),
-                modifier = Modifier.size(width = 80.dp, height = 60.dp)
+                modifier = Modifier.weight(1f)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             OutlinedTextField(
-                label = { Text(text = "iter") },
+                label = { Text(text = "Iter. Máx.") },
                 value = MaxIter.value,
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Sentences,
@@ -367,33 +433,35 @@ fun PasoBodyBisection() {
                     }
                 },
                 shape = RoundedCornerShape(size = 8.dp),
-                modifier = Modifier
-                    .weight(1f)  // Ligeramente más ancho
-                    .height(60.dp)
+                modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(8.dp))
             OutlinedTextField(
-                label = { Text(text = "tol") },
+                label = { Text(text = "Tolerancia") },
                 value = tol.value,
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Sentences,
                     keyboardType = KeyboardType.Number
                 ),
                 onValueChange = { newValue ->
-                    // Primero reemplazamos las comas por puntos
                     val processedValue = newValue.replace(',', '.')
-                    // Luego verificamos si el valor resultante es un número decimal válido
                     if (processedValue.isEmpty() || processedValue.matches(Regex("^-?\\d*\\.?\\d*$"))) {
                         tol.value = processedValue
                     }
                 },
                 shape = RoundedCornerShape(size = 8.dp),
-                modifier = Modifier.size(width = 130.dp, height = 60.dp)
+                modifier = Modifier.weight(1f)
             )
         }
+
+        // VARIABLES CORREGIDAS PARA EL CÁLCULO
         var currentIndex by remember { mutableIntStateOf(0) }
-        val results = remember { mutableStateListOf<ResultadoBisection>() }
+        val results = remember { mutableStateListOf<ResultadoBisectionCorregida>() }
         var shouldContinue by remember { mutableStateOf(true) }
+        var currentA by remember { mutableStateOf(0.0) }
+        var currentB by remember { mutableStateOf(0.0) }
+
+        // Mostrar resultados existentes
         results.forEach { resultado ->
             Box(
                 modifier = Modifier
@@ -401,302 +469,227 @@ fun PasoBodyBisection() {
                     .padding(16.dp)
             ) {
                 Column {
-                    Text(
-                        text = "Iteración: ${resultado.iteracion}",
-                        color = colorResource(id = R.color.rojounicauca),
-                        textAlign = TextAlign.Justify,
-                        fontWeight = FontWeight.Bold
-                    )
                     Box(
                         modifier = Modifier
                             .horizontalScroll(rememberScrollState())
                             .width(400.dp)
                     ) {
-                        Column {
-                            Row(
-                                modifier = Modifier
-                                    .wrapContentWidth()
-                                    .fillMaxWidth()
-                                    .width(IntrinsicSize.Min)
-                                    .horizontalScroll(rememberScrollState())
-                                    .background(colorScheme.background)
-                            ) {
-                                CurvedBorderText(
-                                    text = "a",
-                                    textColor = Color.White,
-                                    backgroundColor = colorResource(id = R.color.azulunicauca),
-                                    fontSize = 12.sp,
-                                    paddingStart = 12.dp,
-                                    paddingEnd = 12.dp,
-                                    paddingTop = 6.dp,
-                                    paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
-                                    borderWidth = 1.dp, // Grosor del borde
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .wrapContentSize(Alignment.Center)
-                                )
-                                CurvedBorderText(
-                                    text = "b",
-                                    textColor = Color.White, // Color del texto personalizado
-                                    backgroundColor = colorResource(id = R.color.azulunicauca),
-                                    fontSize = 12.sp,
-                                    paddingStart = 12.dp,
-                                    paddingEnd = 12.dp,
-                                    paddingTop = 6.dp,
-                                    paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
-                                    borderWidth = 1.dp, // Grosor del borde
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .wrapContentSize(Alignment.Center)
-                                )
-                                CurvedBorderText(
-                                    text = "m${resultado.iteracion}",
-                                    textColor = Color.Red, // Color del texto personalizado
-                                    backgroundColor = colorResource(id = R.color.azulunicauca),
-                                    fontSize = 12.sp,
-                                    paddingStart = 12.dp,
-                                    paddingEnd = 12.dp,
-                                    paddingTop = 6.dp,
-                                    paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
-                                    borderWidth = 1.dp, // Grosor del borde
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .wrapContentSize(Alignment.Center)
-                                )
-                                CurvedBorderText(
-                                    text = "f(a)",
-                                    textColor = Color.White, // Color del texto personalizado
-                                    backgroundColor = colorResource(id = R.color.azulunicauca),
-                                    fontSize = 12.sp,
-                                    paddingStart = 12.dp,
-                                    paddingEnd = 12.dp,
-                                    paddingTop = 6.dp,
-                                    paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
-                                    borderWidth = 1.dp, // Grosor del borde
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .wrapContentSize(Alignment.Center)
-                                )
-                                CurvedBorderText(
-                                    text = "f(b)",
-                                    textColor = Color.White, // Color del texto personalizado
-                                    backgroundColor = colorResource(id = R.color.azulunicauca),
-                                    fontSize = 12.sp,
-                                    paddingStart = 12.dp,
-                                    paddingEnd = 12.dp,
-                                    paddingTop = 6.dp,
-                                    paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
-                                    borderWidth = 1.dp, // Grosor del borde
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .wrapContentSize(Alignment.Center)
-                                )
-                                CurvedBorderText(
-                                    text = "f(m${resultado.iteracion})",
-                                    textColor = Color.Red, // Color del texto personalizado
-                                    backgroundColor = colorResource(id = R.color.azulunicauca),
-                                    fontSize = 12.sp,
-                                    paddingStart = 12.dp,
-                                    paddingEnd = 12.dp,
-                                    paddingTop = 6.dp,
-                                    paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
-                                    borderWidth = 1.dp, // Grosor del borde
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .wrapContentSize(Alignment.Center)
-                                )
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .width(IntrinsicSize.Min)
-                                    .horizontalScroll(rememberScrollState())
-                                    .background(
-                                        shape = RoundedCornerShape(4.dp),
-                                        color = colorResource(id = R.color.grisunicauca)
-                                    )
-                            ) {
-                                CurvedBorderText(
-                                    text = "${resultado.a}",
-                                    textColor = Color.Black, // Color del texto personalizado
-                                    backgroundColor = colorResource(id = R.color.grisunicauca),
-                                    fontSize = 10.sp,
-                                    paddingStart = 12.dp,
-                                    paddingEnd = 12.dp,
-                                    paddingTop = 6.dp,
-                                    paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
-                                    borderWidth = 1.dp, // Grosor del borde
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .wrapContentSize(Alignment.Center)
-                                )
-                                CurvedBorderText(
-                                    text = "${resultado.b}",
-                                    textColor = Color.Black, // Color del texto personalizado
-                                    backgroundColor = colorResource(id = R.color.grisunicauca),
-                                    fontSize = 10.sp,
-                                    paddingStart = 12.dp,
-                                    paddingEnd = 12.dp,
-                                    paddingTop = 6.dp,
-                                    paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
-                                    borderWidth = 1.dp, // Grosor del borde
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .wrapContentSize(Alignment.Center)
-                                )
-                                CurvedBorderText(
-                                    text = resultado.c.toString(),
-                                    textColor = Color.Red,
-                                    backgroundColor = colorResource(id = R.color.grisunicauca),
-                                    fontSize = 10.sp,
-                                    paddingStart = 12.dp,
-                                    paddingEnd = 12.dp,
-                                    paddingTop = 6.dp,
-                                    paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
-                                    borderWidth = 1.dp, // Grosor del borde
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .wrapContentSize(Alignment.Center)
-                                )
-                                CurvedBorderText(
-                                    text = "${evaluarFuncion(resultado.a.toString(), funcion.value)}",
-                                    textColor = Color.Black, // Color del texto personalizado
-                                    backgroundColor = colorResource(id = R.color.grisunicauca),
-                                    fontSize = 10.sp,
-                                    paddingStart = 12.dp,
-                                    paddingEnd = 12.dp,
-                                    paddingTop = 6.dp,
-                                    paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
-                                    borderWidth = 1.dp, // Grosor del borde
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .wrapContentSize(Alignment.Center)
-                                )
-                                CurvedBorderText(text = "${evaluarFuncion(resultado.b.toString(), funcion.value)}",
-                                    textColor = Color.Black, // Color del texto personalizado
-                                    backgroundColor = colorResource(id = R.color.grisunicauca),
-                                    fontSize = 10.sp,
-                                    paddingStart = 12.dp,
-                                    paddingEnd = 12.dp,
-                                    paddingTop = 6.dp,
-                                    paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
-                                    borderWidth = 1.dp, // Grosor del borde
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .wrapContentSize(Alignment.Center)
-                                )
-                                CurvedBorderText(
-                                    text = "${evaluarFuncion(resultado.c.toString(), funcion.value)}",
-                                    textColor = Color.Red, // Color del texto personalizado
-                                    backgroundColor = colorResource(id = R.color.grisunicauca),
-                                    fontSize = 10.sp,
-                                    paddingStart = 12.dp,
-                                    paddingEnd = 12.dp,
-                                    paddingTop = 6.dp,
-                                    paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
-                                    borderWidth = 1.dp, // Grosor del borde
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .wrapContentSize(Alignment.Center)
-                                )
-                            }
-                        }
+                        IteracionResultCardBisectionCorregida(
+                            resultado = resultado,
+                            funcionExpresion = funcion.value,
+                            tolerancia = tol.value,
+                            colorScheme = colorScheme
+                        )
                     }
-                    val previousA = resultado.a
-                    val errorf = abs(resultado.c.toString().toDouble() - previousA) / resultado.c.toString().toDouble()
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    if (evaluarFuncion(resultado.a.toString(), funcion.value) * evaluarFuncion(resultado.c.toString(), funcion.value) < 0) {
-                        Text(
-                            text = "Observé que f(m${resultado.iteracion}) < f(b) y el signo de f(a) con el signo de f(m${resultado.iteracion}) son opuestos, por lo que el nuevo intervalo se define como [a,m]. De este modo, el valor de 'b' toma el valor de m${resultado.iteracion}.",
-                            color = colorScheme.onBackground,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Justify
-                        )
-                    } else {
-                        Text(
-                            text = "Observé que f(a) < f(m${resultado.iteracion}) y el signo de f(m${resultado.iteracion}) con el signo f(b) son opuestos, por lo que el nuevo intervalo se define como [m,b]. De este modo, el valor de 'a' toma el valor de m${resultado.iteracion}.",
-                            color = colorScheme.onBackground,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Justify
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "Ademas:",
-                        color = colorScheme.onBackground,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Justify
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Row(
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Card para la explicación del intervalo
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .horizontalScroll(rememberScrollState()),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(vertical = 8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = colorScheme.surfaceVariant.copy(alpha = 0.6f)
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
-                        Box {
-                            Text(
-                                text = "       (m${resultado.iteracion} - m${resultado.iteracion - 1}) \n" +
-                                        "error =    ----------     \n  " +
-                                        "     m${resultado.iteracion}",
-                                modifier = Modifier.fillMaxWidth(),
-                                color = colorScheme.onBackground,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Box {
-                            Text(
-                                text = "       (${
-                                    resultado.c.toString().toDouble()
-                                } - ${previousA}) \n" +
-                                        "=    ----------   =  \n  " +
-                                        "  ${resultado.c.toString().toDouble()}   ",
-                                modifier = Modifier.fillMaxWidth(),
-                                color = colorScheme.onBackground,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        resultado.a = resultado.c
-                        Box {
-                            val relativeError = abs(resultado.c - resultado.previousA) / resultado.c
-                            Text(
-                                text = " = ${String.format("%.4f", relativeError)}",
-                                modifier = Modifier.fillMaxWidth(),
-                                color = colorScheme.onBackground,
-                                textAlign = TextAlign.Center
-                            )
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = null,
+                                    tint = colorScheme.primary,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Análisis del Intervalo",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = colorScheme.primary,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            if (evaluarFuncion(resultado.a.toString(), funcion.value)!! *
+                                evaluarFuncion(resultado.c.toString(), funcion.value)!! < 0) {
+                                Text(
+                                    text = "🔍 f(a) × f(m${resultado.iteracion}) < 0, por lo que la raíz está en [a, m${resultado.iteracion}]",
+                                    color = colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Justify
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "📍 Nuevo intervalo: b = m${resultado.iteracion} = ${formatearValor(resultado.c)}",
+                                    color = colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Justify,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            } else {
+                                Text(
+                                    text = "🔍 f(m${resultado.iteracion}) × f(b) < 0, por lo que la raíz está en [m${resultado.iteracion}, b]",
+                                    color = colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Justify
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "📍 Nuevo intervalo: a = m${resultado.iteracion} = ${formatearValor(resultado.c)}",
+                                    color = colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Justify,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
                         }
                     }
+
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Aquí es donde hacemos el cambio
+                    // Card para el cálculo del error CORREGIDO
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = colorScheme.tertiaryContainer.copy(alpha = 0.7f)
+                        ),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Build,
+                                    contentDescription = null,
+                                    tint = colorScheme.tertiary,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Cálculo del Error Relativo",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = colorScheme.tertiary,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
 
-                    if (errorf < tol.value.toDouble() || resultado.iteracion >= MaxIter.value.toInt()) {
+                            Spacer(modifier = Modifier.height(16.dp))
 
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                // Fórmula general
+                                Card(
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = colorScheme.surface
+                                    ),
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                ) {
+                                    Text(
+                                        text = "Error = |m${resultado.iteracion} - m${resultado.iteracion - 1}| / |m${resultado.iteracion}|",
+                                        modifier = Modifier.padding(12.dp),
+                                        color = colorScheme.onSurface,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontFamily = FontFamily.Monospace,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                // Valores numéricos
+                                Card(
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = colorScheme.surface
+                                    ),
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                ) {
+                                    Text(
+                                        text = "Error = |${formatearValor(resultado.c)} - ${formatearValor(resultado.previousC)}| / |${formatearValor(resultado.c)}|",
+                                        modifier = Modifier.padding(12.dp),
+                                        color = colorScheme.onSurface,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontFamily = FontFamily.Monospace,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                // Resultado final destacado
+                                Card(
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = if (resultado.errorRelativo < tol.value.toDoubleOrNull() ?: 0.01)
+                                            colorScheme.primaryContainer
+                                        else
+                                            colorScheme.errorContainer
+                                    ),
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(16.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = if (resultado.errorRelativo < tol.value.toDoubleOrNull() ?: 0.01)
+                                                Icons.Default.CheckCircle else Icons.Default.Info,
+                                            contentDescription = null,
+                                            tint = if (resultado.errorRelativo < tol.value.toDoubleOrNull() ?: 0.01)
+                                                colorScheme.onPrimaryContainer
+                                            else
+                                                colorScheme.onErrorContainer,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            text = "Error = ${formatearValor(resultado.errorRelativo)} (${String.format("%.4f", resultado.errorRelativo * 100)}%)",
+                                            color = if (resultado.errorRelativo < tol.value.toDoubleOrNull() ?: 0.01)
+                                                colorScheme.onPrimaryContainer
+                                            else
+                                                colorScheme.onErrorContainer,
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Verificación de convergencia
+                    val toleranciaDouble = tol.value.toDoubleOrNull() ?: 0.01
+                    if (resultado.errorRelativo < toleranciaDouble || resultado.iteracion >= MaxIter.value.toIntOrNull() ?: 100) {
                         Text(
-                            text = "aquí ${String.format("%.4f", errorf)} < ${tol.value.toDouble()}, por lo que el error es menor al permitido. De manera que, se da por terminado el proceso.",
-                            color = colorScheme.onBackground,
-                            textAlign = TextAlign.Justify
+                            text = "✅ Error ${formatearValor(resultado.errorRelativo)} < ${formatearValor(toleranciaDouble)}, convergencia alcanzada.",
+                            color = colorScheme.primary,
+                            textAlign = TextAlign.Justify,
+                            fontWeight = FontWeight.Bold
                         )
                     } else {
                         Text(
-                            text = "tal que ${tol.value.toDouble()} < ${String.format("%.4f", errorf)}  , por lo que se procede a calcular m${resultado.iteracion + 1}.",
+                            text = "⏭️ Error ${formatearValor(resultado.errorRelativo)} > ${formatearValor(toleranciaDouble)}, se continúa con la siguiente iteración.",
                             color = colorScheme.onBackground,
                             textAlign = TextAlign.Justify
                         )
@@ -704,197 +697,401 @@ fun PasoBodyBisection() {
                 }
             }
         }
+
+        // Lógica para continuar con las iteraciones
         if (shouldContinue) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-            ) {
-                Text(
-                    text = "${currentIndex + 3}. Dado el intervalo [a,b] = [${a.value},${b.value}]:\n" +
-                            "\nse calcula el punto de corte m${currentIndex + 1} con la siguiente ecuación:",
-                    color = colorScheme.onBackground,
-                    textAlign = TextAlign.Justify
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box {
-                    Text(
-                        text = "       a + b \n" +
-                                "m${currentIndex + 1} =    ----------   =  \n  " +
-                                "     2", modifier = Modifier.fillMaxWidth(),
-                        color = colorScheme.onBackground,
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Box {
-                    Text(
-                        text = "${a.value} + ${b.value} \n" +
-                                "      ----------       \n  " +
-                                "2", modifier = Modifier.fillMaxWidth(),
-                        color = colorScheme.onBackground,
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Button(
-                    onClick = {
-                        try {
-                            if (a.value.isEmpty() || b.value.isEmpty() || funcion.value.isEmpty() ||
-                                tol.value.isEmpty() || MaxIter.value.isEmpty()
-                            ) {
-                                Toast.makeText(context, "No deje datos vacíos", Toast.LENGTH_SHORT)
-                                    .show()
-                                return@Button
-                            } else {
-                                bandera.value = a.value
-                                Toast.makeText(
-                                    context,
-                                    "Calculando x${currentIndex + 2}",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-                                val aDouble = a.value.toDouble()
-                                val bDouble = b.value.toDouble()
-
-                                // Calculamos el nuevo punto
-                                val result = calcularX2Bisection(
-                                    a = aDouble,
-                                    b = bDouble,
-                                    funcion = funcion.value
-                                )
-
-                                // Calculamos el error relativo con protección contra NaN
-                                val previoA = if (results.isEmpty()) aDouble else results.last().c
-                                val errorf = if (result != 0.0) {
-                                    abs(result - previoA) / abs(result)
-                                } else {
-                                    abs(result - previoA) // Si result es 0, usamos solo la diferencia absoluta
-                                }
-                                // Verificar si el error es válido
-                                if (errorf.isNaN()) {
-                                    Toast.makeText(
-                                        context,
-                                        "Error: El cálculo del error produjo un valor inválido",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    return@Button
-                                }
-
-                                // Agregamos el resultado a la lista
-                                results.add(
-                                    ResultadoBisection(
-                                        currentIndex + 1,
-                                        aDouble,
-                                        bDouble,
-                                        result,
-                                        previoA  // Guardamos el valor previo
-                                    )
-                                )
-                                currentIndex++
-
-                                // Evaluamos la función en los puntos necesarios
-                                val fa = evaluarFuncion(result.toString(), funcion.value)
-                                val fc = evaluarFuncion(result.toString(), funcion.value)
-
-                                // Actualizar el intervalo solo si los valores son válidos
-                                if (fa != null && fc != null) {
-                                    if (evaluarFuncion(
-                                            aDouble.toString(),
-                                            funcion.value
-                                        )!! * fc < 0
-                                    ) {
-                                        b.value = result.toString()
-                                    } else {
-                                        a.value = result.toString()
-                                    }
-                                }
-                                // Verificamos si debemos continuar
-                                shouldContinue =
-                                    currentIndex < MaxIter.value.toInt() && errorf > tol.value.toDouble()
-                            }
-                        } catch (e: Exception) {
-                            Toast.makeText(
-                                context,
-                                "Error en el cálculo: ${e.message}",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = colorScheme.primary),
-                    enabled = shouldContinue
-                ) {
-                    val aux = currentIndex + 2
-                    Text(text = "Iteración ${aux - 1}")
-                }
-            }
-
-        } else {
-            Column {
-
-                Text(
-                    text = "La raíz de la ecuación f(x) = ${funcion.value} es:",
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    color = colorScheme.onBackground,
-                )
-                Text(
-                    text = "x ≈ ${results.lastOrNull()?.c ?: "No disponible"}",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = colorScheme.onBackground,
-                )
-            }
-        }
-        if (!shouldContinue) {
-            Text(
-                text = "El proceso ha terminado.",
-                color = colorScheme.onBackground,
-                modifier = Modifier.padding(16.dp),
-                fontWeight = FontWeight.Bold
-            )
-            Button(
-                onClick = {
-                    // Reiniciar todas las variables
-                    funcion.value = ""
-                    a.value = ""
-                    b.value = ""
-                    tol.value = ""
-                    MaxIter.value = ""
-                    bandera.value = ""
-                    currentIndex = 0
-                    results.clear()
-                    shouldContinue = true
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = colorScheme.primary),
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text("Realizar nuevo cálculo")
+                val aActual = if (results.isEmpty()) a.value else {
+                    if (currentA != 0.0) currentA.toString() else a.value
+                }
+                val bActual = if (results.isEmpty()) b.value else {
+                    if (currentB != 0.0) currentB.toString() else b.value
+                }
+
+                Text(
+                    text = "${currentIndex + 3}. Intervalo actual [a, b] = [${formatearValor(aActual.toDoubleOrNull() ?: 0.0)}, ${formatearValor(bActual.toDoubleOrNull() ?: 0.0)}]:\n\nCalcular el punto medio m${currentIndex + 1}:",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Justify,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Fórmula general
+                Surface(
+                    tonalElevation = 2.dp,
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                ) {
+                    Text(
+                        text = "m${currentIndex + 1} = (a + b) / 2",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Medium
+                        ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp)
+                    )
+                }
+
+                // Evaluación con valores actuales
+                Surface(
+                    tonalElevation = 1.dp,
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "m${currentIndex + 1} = (${formatearValor(aActual.toDoubleOrNull() ?: 0.0)} + ${formatearValor(bActual.toDoubleOrNull() ?: 0.0)}) / 2 = ${formatearValor(((aActual.toDoubleOrNull() ?: 0.0) + (bActual.toDoubleOrNull() ?: 0.0)) / 2)}",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Medium
+                        ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = {
+                        if (funcion.value.isEmpty() || a.value.isEmpty() || b.value.isEmpty() ||
+                            tol.value.isEmpty() || MaxIter.value.isEmpty()) {
+                            Toast.makeText(context, "Complete todos los campos", Toast.LENGTH_SHORT).show()
+                            return@Button
+                        }
+
+                        val aVal = if (results.isEmpty()) a.value.toDoubleOrNull() ?: 0.0 else currentA
+                        val bVal = if (results.isEmpty()) b.value.toDoubleOrNull() ?: 0.0 else currentB
+                        val tolerancia = tol.value.toDoubleOrNull() ?: 0.01
+                        val maxIteraciones = MaxIter.value.toIntOrNull() ?: 100
+
+                        // Calcular punto medio
+                        val puntoMedio = (aVal + bVal) / 2.0
+
+                        // Calcular error relativo (si hay iteración anterior)
+                        val errorRelativo = if (results.isNotEmpty()) {
+                            val puntoMedioAnterior = results.last().c
+                            abs(puntoMedio - puntoMedioAnterior) / abs(puntoMedio)
+                        } else {
+                            1.0 // Primera iteración, error alto
+                        }
+
+                        // Crear resultado
+                        val resultado = ResultadoBisectionCorregida(
+                            iteracion = currentIndex + 1,
+                            a = aVal,
+                            b = bVal,
+                            c = puntoMedio,
+                            previousC = if (results.isNotEmpty()) results.last().c else 0.0,
+                            errorRelativo = errorRelativo
+                        )
+
+                        results.add(resultado)
+
+                        // Actualizar intervalo para siguiente iteración
+                        val fa = evaluarFuncion(aVal.toString(), funcion.value) ?: 0.0
+                        val fc = evaluarFuncion(puntoMedio.toString(), funcion.value) ?: 0.0
+
+                        if (fa * fc < 0) {
+                            // La raíz está en [a, c]
+                            currentA = aVal
+                            currentB = puntoMedio
+                        } else {
+                            // La raíz está en [c, b]
+                            currentA = puntoMedio
+                            currentB = bVal
+                        }
+
+                        currentIndex++
+
+                        // Verificar condiciones de parada
+                        if (errorRelativo < tolerancia || currentIndex >= maxIteraciones) {
+                            shouldContinue = false
+                            Toast.makeText(
+                                context,
+                                if (errorRelativo < tolerancia)
+                                    "¡Convergencia alcanzada!"
+                                else
+                                    "Máximo de iteraciones alcanzado",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text(
+                        text = "Calcular Iteración ${currentIndex + 1}",
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+
+        // Botón para reiniciar el proceso
+        if (!shouldContinue || results.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Button(
+                    onClick = {
+                        // Reiniciar todo
+                        results.clear()
+                        currentIndex = 0
+                        shouldContinue = true
+                        currentA = 0.0
+                        currentB = 0.0
+                        Toast.makeText(context, "Proceso reiniciado", Toast.LENGTH_SHORT).show()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary
+                    ),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "Reiniciar",
+                        color = MaterialTheme.colorScheme.onSecondary
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Button(
+                    onClick = {
+                        // Limpiar campos
+                        funcion.value = ""
+                        a.value = ""
+                        b.value = ""
+                        tol.value = ""
+                        MaxIter.value = ""
+                        results.clear()
+                        currentIndex = 0
+                        shouldContinue = true
+                        currentA = 0.0
+                        currentB = 0.0
+                        Toast.makeText(context, "Campos limpiados", Toast.LENGTH_SHORT).show()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.tertiary
+                    ),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "Limpiar Todo",
+                        color = MaterialTheme.colorScheme.onTertiary
+                    )
+                }
             }
         }
     }
 }
 
 @SuppressLint("DefaultLocale")
-fun calcularX2Bisection(a: Double, b: Double, funcion: String): Double {
-    val x2 = (a + b) / 2
-    return String.format("%.4f", x2).toDouble()
+@Composable
+fun IteracionResultCardBisectionCorregida(
+    resultado: ResultadoBisectionCorregida,
+    funcionExpresion: String,
+    tolerancia: String,
+    colorScheme: ColorScheme
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceVariant)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = "Iteración ${resultado.iteracion}",
+                color = colorResource(id = R.color.rojounicauca),
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Tabla de valores
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(colorScheme.surface, RoundedCornerShape(8.dp))
+                    .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
+            ) {
+                // Encabezados
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(colorResource(id = R.color.azulunicauca))
+                        .padding(8.dp)
+                ) {
+                    Text(
+                        text = "a",
+                        color = Color.White,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "b",
+                        color = Color.White,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "m${resultado.iteracion}",
+                        color = Color.White,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                // Valores
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    val aFormatted = formatearValor(resultado.a)
+                    val bFormatted = formatearValor(resultado.b)
+                    val cFormatted = formatearValor(resultado.c)
+
+                    Text(
+                        text = aFormatted,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center
+                    )
+
+                    Text(
+                        text = bFormatted,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = cFormatted,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center,
+                        color = colorResource(id = R.color.rojounicauca),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                // Encabezados f(x)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(colorResource(id = R.color.azulunicauca))
+                        .padding(8.dp)
+                ) {
+                    Text(
+                        text = "f(a)",
+                        color = Color.White,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "f(b)",
+                        color = Color.White,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "f(m${resultado.iteracion})",
+                        color = Color.White,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                // Valores f(x)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    val fa = evaluarFuncion(resultado.a.toString(), funcionExpresion) ?: 0.0
+                    val fb = evaluarFuncion(resultado.b.toString(), funcionExpresion) ?: 0.0
+                    val fc = evaluarFuncion(resultado.c.toString(), funcionExpresion) ?: 0.0
+
+                    val faFormatted = formatearValor(fa)
+                    val fbFormatted = formatearValor(fb)
+                    val fcFormatted = formatearValor(fc)
+
+                    Text(
+                        text = faFormatted,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = fbFormatted,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = fcFormatted,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center,
+                        color = colorResource(id = R.color.rojounicauca),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Análisis del error (solo si no es la primera iteración)
+            if (resultado.iteracion > 1) {
+                val errorCalculado = resultado.errorRelativo
+                val toleranciaDouble = tolerancia.toDoubleOrNull() ?: 0.0
+
+                val errorFormatted = formatearValor(errorCalculado)
+                val toleranciaFormatted = formatearValor(toleranciaDouble)
+
+                Text(
+                    text = "Error relativo: |m${resultado.iteracion} - m${resultado.iteracion - 1}| / |m${resultado.iteracion}| = $errorFormatted",
+                    fontSize = 14.sp,
+                    color = colorScheme.onSurfaceVariant
+                )
+
+                val haConvergido = errorCalculado <= toleranciaDouble
+
+                Text(
+                    text = if (haConvergido)
+                        "El error es menor que la tolerancia ($toleranciaFormatted). Convergencia alcanzada."
+                    else
+                        "El error es mayor que la tolerancia ($toleranciaFormatted). Se continúa el proceso.",
+                    fontSize = 14.sp,
+                    fontWeight = if (haConvergido) FontWeight.Bold else FontWeight.Normal,
+                    color = if (haConvergido) colorResource(id = R.color.rojounicauca) else colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
 }
