@@ -1,6 +1,7 @@
 package com.example.mathsus_ia.ui.methods.secanteMethod
 
 import android.annotation.SuppressLint
+import android.webkit.WebView
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -45,15 +46,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mathsus.ui.features.nav_menu_secante.ResultadoSecante
 import io.github.jesusgurrute.mathsus_ia.R
@@ -61,6 +67,10 @@ import com.example.mathsus_ia.ui.methods.FunctionGraph
 import com.example.mathsus_ia.ui.methods.GraphViewModel
 import org.mariuszgromada.math.mxparser.Function
 import kotlin.math.abs
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
+
 
 @Composable
 fun BodySecante() {
@@ -320,17 +330,26 @@ fun PasoBodySecante() {
         )
 
         // Sección 2: Ingreso de parámetros
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+        Card(
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFEFEFEF)),
+            modifier = Modifier.padding(vertical = 8.dp)
         ) {
             Text(
-                text = "2. Elija los puntos iniciales x0, x1, el número máximo de iteraciones y un valor de tolerancia. Si |Xnuevo - Xanterior|/Xnuevo < tolerancia, el proceso termina.",
+                text = buildAnnotatedString {
+                    append("2. Ingrese ")
+                    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append("x₀, x₁")
+                    }
+                    append(", número máximo de iteraciones y una tolerancia. El algoritmo finaliza si llega al máximo de iteraciones o si el error relativo es menor o igual a la tolerancia:\n\n")
+                    withStyle(SpanStyle(fontFamily = FontFamily.Monospace, fontSize = 16.sp)) {
+                        append("|xₙ₊₁ - xₙ| / |xₙ₊₁| < tolerancia")
+                    }
+                },
                 color = colorScheme.onBackground,
-                textAlign = TextAlign.Justify
+                textAlign = TextAlign.Start
             )
         }
+
 
         Row(
             modifier = Modifier
@@ -450,112 +469,96 @@ fun PasoBodySecante() {
                     .padding(16.dp)
             ) {
                 Column {
-                    Text(
-                        text = "${currentIndex + 3}. Dado:\n" +
-                                "\nx0 = ${x0.value}\n" +
-                                "x1 = ${x1.value}\n" +
-                                "\nSe calcula el punto de corte x${currentIndex + 2} con la siguiente ecuación:",
-                        color = colorScheme.onBackground,
-                        textAlign = TextAlign.Justify
-                    )
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F0F0)),
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text(
+                                text = "Fórmula usada:",
+                                fontWeight = FontWeight.Bold,
+                                color = colorScheme.onBackground
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = buildAnnotatedString {
+                                    append("${currentIndex + 3}. Dado:\n\n")
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                                    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                                        append("x₀ = ${x0.value}\n")
+                                        append("x₁ = ${x1.value}\n")
+                                    }
 
-                    Text(
-                        text = "x${currentIndex + 2} = x1 - ((x1 - x0) / (f(x1) - f(x0))) * f(x1)",
-                        modifier = Modifier.fillMaxWidth(),
-                        color = colorScheme.onBackground,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Medium
-                    )
+                                    append("\nSe calcula el nuevo punto x${currentIndex + 2} con la fórmula:\n\n")
+
+                                    withStyle(
+                                        SpanStyle(
+                                            fontFamily = FontFamily.Monospace,
+                                            fontSize = 16.sp,
+                                            color = colorScheme.primary,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    ) {
+                                        append("x${currentIndex + 2} = x₁ - ((x₁ - x₀) / (f(x₁) - f(x₀))) × f(x₁)")
+                                    }
+                                },
+                                textAlign = TextAlign.Justify,
+                                color = colorScheme.onBackground,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                        }
+                    }
+
+
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
                         onClick = {
-                            if (x0.value.isEmpty() || x1.value.isEmpty() || f.value.isEmpty() ||
-                                error.value.isEmpty() || MaxIter.value.isEmpty()
-                            ) {
-                                Toast.makeText(
-                                    context,
-                                    "Complete todos los campos antes de calcular",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                return@Button
-                            }
-
                             try {
-                                val x0Double = x0.value.toDouble()
-                                val x1Double = x1.value.toDouble()
-                                val tolerancia = error.value.toDouble()
-                                val maxIteraciones = MaxIter.value.toIntOrNull() ?: 0
+                                val x0Double = x0.value.toDoubleOrNull()
+                                val x1Double = x1.value.toDoubleOrNull()
+                                val tolerancia = error.value.toDoubleOrNull()
+                                val maxIter = MaxIter.value.toIntOrNull()
 
-                                if (maxIteraciones <= 0) {
-                                    Toast.makeText(
-                                        context,
-                                        "El número máximo de iteraciones debe ser positivo",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                if (x0Double == null || x1Double == null || tolerancia == null || maxIter == null || maxIter <= 0) {
+                                    Toast.makeText(context, "Verifique los campos ingresados", Toast.LENGTH_SHORT).show()
                                     return@Button
                                 }
 
-                                // Calcular el nuevo punto x2
-                                val fx0 = evaluarFuncion(x0Double.toString(), f.value) ?: 0.0
-                                val fx1 = evaluarFuncion(x1Double.toString(), f.value) ?: 0.0
-
-                                if (fx1 == fx0) {
-                                    Toast.makeText(
-                                        context,
-                                        "Error: División por cero. Los valores de la función coinciden en x0 y x1.",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    return@Button
-                                }
-
-                                val x2Double = x1Double - ((x1Double - x0Double) / (fx1 - fx0)) * fx1
-
-                                // Calcular error relativo
-                                val errorCalculado = abs(x2Double - x1Double) / abs(x2Double)
-
-                                // Agregar el resultado a la lista
-                                results.add(
-                                    ResultadoSecante(
-                                        iteracion = currentIndex,
-                                        x0 = x0Double,
-                                        x1 = x1Double,
-                                        x2 = x2Double,
-                                        errorRelativo = errorCalculado
-                                    )
+                                val (resultado, errorMsg) = metodoSecantePaso(
+                                    x0Double,
+                                    x1Double,
+                                    f.value,
+                                    currentIndex,
+                                    tolerancia,
+                                    ::evaluarFuncion
                                 )
 
-                                // Preparar para la siguiente iteración
-                                x0.value = x1Double.toString()
-                                x1.value = x2Double.toString()
-                                currentIndex++
+                                if (errorMsg != null) {
+                                    Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+                                    return@Button
+                                }
 
-                                // Verificar si debemos continuar
-                                shouldContinue = currentIndex < maxIteraciones && errorCalculado > tolerancia
+                                resultado?.let {
+                                    results.add(it)
+                                    x0.value = it.x1.toString()
+                                    x1.value = it.x2.toString()
+                                    currentIndex++
 
-                                if (!shouldContinue && errorCalculado <= tolerancia) {
-                                    Toast.makeText(
-                                        context,
-                                        "Convergencia alcanzada: Error < Tolerancia",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else if (!shouldContinue) {
-                                    Toast.makeText(
-                                        context,
-                                        "Se alcanzó el número máximo de iteraciones",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    shouldContinue = currentIndex < maxIter && it.errorRelativo > tolerancia
+
+                                    when {
+                                        !shouldContinue && it.errorRelativo <= tolerancia ->
+                                            Toast.makeText(context, "Convergencia alcanzada", Toast.LENGTH_SHORT).show()
+                                        !shouldContinue ->
+                                            Toast.makeText(context, "Máximo de iteraciones alcanzado", Toast.LENGTH_SHORT).show()
+                                    }
                                 }
 
                             } catch (e: Exception) {
-                                Toast.makeText(
-                                    context,
-                                    "Error en el cálculo: ${e.message}",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                Toast.makeText(context, "Error inesperado: ${e.message}", Toast.LENGTH_LONG).show()
                             }
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = colorScheme.primary),
@@ -563,6 +566,7 @@ fun PasoBodySecante() {
                     ) {
                         Text(text = "Calcular x${currentIndex + 2}")
                     }
+
                 }
             }
         } else {
@@ -603,7 +607,7 @@ fun PasoBodySecante() {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "Error relativo: ${results.lastOrNull()?.errorRelativo?.let { String.format("%.8f", it) } ?: "No disponible"}",
+                        text = "Error relativo: ${results.lastOrNull()?.errorRelativo?.let { formatearValor(it) } ?: "No disponible"}",
                         color = colorScheme.onSecondaryContainer
                     )
 
@@ -639,6 +643,59 @@ fun PasoBodySecante() {
     }
 }
 
+fun metodoSecantePaso(
+    x0: Double,
+    x1: Double,
+    fStr: String,
+    currentIndex: Int,
+    tolerancia: Double,
+    evaluarFuncion: (String, String) -> Double?,
+): Pair<ResultadoSecante?, String?> {
+    val fx0 = evaluarFuncion(x0.toString(), fStr)
+    val fx1 = evaluarFuncion(x1.toString(), fStr)
+
+    if (fx0 == null || fx1 == null) {
+        return null to "Error al evaluar la función. Verifique la expresión."
+    }
+
+    if (fx1 == fx0) {
+        return null to "División por cero: f(x0) y f(x1) son iguales."
+    }
+
+    val x2 = x1 - fx1 * (x1 - x0) / (fx1 - fx0)
+    val error = abs(x2 - x1) / abs(x2)
+
+    val resultado = ResultadoSecante(
+        iteracion = currentIndex,
+        x0 = x0,
+        x1 = x1,
+        x2 = x2,
+        errorRelativo = error
+    )
+
+    return resultado to null // null indica que no hubo error
+}
+
+
+@Composable
+fun formatearValor(valor: Double): String {
+    return if ((valor >= 1e6 || (valor <= 1e-4 && valor != 0.0))) {
+        // Formatear con notación científica y luego convertir "E" a "×10^"
+        val valorFormateado = String.format(Locale.US, "%.6e", valor)
+        val partes = valorFormateado.split("e", "E")
+        val base = partes[0].trimEnd('0').trimEnd('.')
+        val exponente = partes[1].toInt()  // Puede tener signo
+        "$base×10^$exponente"
+    } else {
+        // Mostrar como número decimal con hasta 6 cifras significativas
+        val formatter = DecimalFormat("0.######", DecimalFormatSymbols(Locale.US))
+        formatter.format(valor)
+    }
+}
+
+
+
+@SuppressLint("DefaultLocale")
 @Composable
 fun IteracionResultCard(
     resultado: ResultadoSecante,
@@ -706,18 +763,26 @@ fun IteracionResultCard(
                         .fillMaxWidth()
                         .padding(8.dp)
                 ) {
+
+
+                    val x0Formatted = formatearValor(resultado.x0)
+                    val x1Formatted = formatearValor(resultado.x1)
+                    val x2Formatted = formatearValor(resultado.x2)
+
+
                     Text(
-                        text = String.format("%.6f", resultado.x0),
+                        text = x0Formatted,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center
+                    )
+
+                    Text(
+                        text = x1Formatted,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = String.format("%.6f", resultado.x1),
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        text = String.format("%.6f", resultado.x2),
+                        text = x2Formatted,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
                         color = colorResource(id = R.color.rojounicauca),
@@ -765,18 +830,23 @@ fun IteracionResultCard(
                     val fx1 = evaluarFuncion(resultado.x1.toString(), funcionExpresion) ?: 0.0
                     val fx2 = evaluarFuncion(resultado.x2.toString(), funcionExpresion) ?: 0.0
 
+                    val fx0Formatted = formatearValor(fx0)
+                    val fx1Formatted = formatearValor(fx1)
+                    val fx2Formatted = formatearValor(fx2)
+
+
                     Text(
-                        text = String.format("%.6f", fx0),
+                        text = fx0Formatted,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = String.format("%.6f", fx1),
+                        text = fx1Formatted,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = String.format("%.6f", fx2),
+                        text = fx2Formatted,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
                         color = colorResource(id = R.color.rojounicauca),
@@ -791,26 +861,68 @@ fun IteracionResultCard(
             val errorCalculado = resultado.errorRelativo
             val toleranciaDouble = tolerancia.toDoubleOrNull() ?: 0.0
 
+            val errorFormatted = formatearValor(errorCalculado)
+            val toleranciaFormatted = formatearValor(toleranciaDouble)
+
             Text(
-                text = "Error relativo: |x${resultado.iteracion + 2} - x1| / |x${resultado.iteracion + 2}| = ${String.format("%.8f", errorCalculado)}",
+                text = "Error relativo: |x${resultado.iteracion + 2} - x1| / |x${resultado.iteracion + 2}| = $errorFormatted",
                 fontSize = 14.sp,
                 color = colorScheme.onSurfaceVariant
             )
 
+            val haConvergido = errorCalculado <= toleranciaDouble
+
             Text(
-                text = if (errorCalculado <= toleranciaDouble)
-                    "El error es menor que la tolerancia (${tolerancia}). Convergencia alcanzada."
+                text = if (haConvergido)
+                    "El error es menor que la tolerancia ($toleranciaFormatted). Convergencia alcanzada."
                 else
-                    "El error es mayor que la tolerancia (${tolerancia}). Se continúa el proceso.",
+                    "El error es mayor que la tolerancia ($toleranciaFormatted). Se continúa el proceso.",
                 fontSize = 14.sp,
-                fontWeight = if (errorCalculado <= toleranciaDouble) FontWeight.Bold else FontWeight.Normal,
-                color = if (errorCalculado <= toleranciaDouble) colorResource(id = R.color.rojounicauca) else colorScheme.onSurfaceVariant
+                fontWeight = if (haConvergido) FontWeight.Bold else FontWeight.Normal,
+                color = if (haConvergido) colorResource(id = R.color.rojounicauca) else colorScheme.onSurfaceVariant
             )
+
         }
     }
 }
 
 
+@Composable
+fun MathFormulaView(latex: String, modifier: Modifier = Modifier) {
+    AndroidView(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(120.dp), // ajusta la altura según necesidad
+        factory = { context ->
+            WebView(context).apply {
+                settings.javaScriptEnabled = true
+                setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                loadDataWithBaseURL(
+                    null,
+                    """
+                    <html>
+                      <head>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+                        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+                        <script defer>
+                          document.addEventListener("DOMContentLoaded", function() {
+                            katex.render("$latex", document.getElementById("formula"), {
+                              throwOnError: false
+                            });
+                          });
+                        </script>
+                      </head>
+                      <body style="margin:0;padding:0;">
+                        <div id="formula" style="font-size: 1.2em; padding: 10px;"></div>
+                      </body>
+                    </html>
+                    """.trimIndent(),
+                    "text/html", "utf-8", null
+                )
+            }
+        }
+    )
+}
 
 
 @SuppressLint("DefaultLocale")
