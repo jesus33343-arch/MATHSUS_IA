@@ -99,7 +99,7 @@ fun BodySecante() {
     ) {
 
         OutlinedTextField(
-            label = { Text(text = "Ingrese la funcion") },
+            label = { Text(text = "Ingrese la función") },
             value = f.value,
             onValueChange = {
                 if (f.value.length <= 30)
