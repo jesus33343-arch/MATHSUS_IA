@@ -210,7 +210,7 @@ fun BodyFalsi() {
             /*
             Text(
                 text = "Al llenar todas las casillas, oprima el boton 'calcular'",
-                color = Color.Black,
+                color = colorScheme.onBackground,
                 modifier = Modifier.padding(16.dp)
             )
              */
@@ -251,7 +251,7 @@ fun PasoBodyFalsi() {
             style = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = colorScheme.onBackground
             )
         )
         val funcion = remember { mutableStateOf("") }
@@ -404,7 +404,7 @@ fun PasoBodyFalsi() {
                 Column {
                     Text(
                         text = "Iteración: ${resultado.iteracion}",
-                        color = colorResource(id = R.color.rojounicauca),
+                        color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Justify,
                         fontWeight = FontWeight.Bold
                     )
@@ -431,7 +431,7 @@ fun PasoBodyFalsi() {
                                     paddingEnd = 12.dp,
                                     paddingTop = 6.dp,
                                     paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
+                                    borderColor = colorScheme.onSurface,
                                     borderWidth = 1.dp, // Grosor del borde
                                     modifier = Modifier
                                         .weight(1f)
@@ -446,7 +446,7 @@ fun PasoBodyFalsi() {
                                     paddingEnd = 12.dp,
                                     paddingTop = 6.dp,
                                     paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
+                                    borderColor = colorScheme.onSurface,
                                     borderWidth = 1.dp, // Grosor del borde
                                     modifier = Modifier
                                         .weight(1f)
@@ -454,14 +454,14 @@ fun PasoBodyFalsi() {
                                 )
                                 CurvedBorderText(
                                     text = "c${resultado.iteracion}",
-                                    textColor = Color.Red, // Color del texto personalizado
+                                    textColor = colorScheme.primary, // Color del texto personalizado
                                     backgroundColor = colorResource(id = R.color.azulunicauca),
                                     fontSize = 12.sp,
                                     paddingStart = 12.dp,
                                     paddingEnd = 12.dp,
                                     paddingTop = 6.dp,
                                     paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
+                                    borderColor = colorScheme.onSurface,
                                     borderWidth = 1.dp, // Grosor del borde
                                     modifier = Modifier
                                         .weight(1f)
@@ -476,7 +476,7 @@ fun PasoBodyFalsi() {
                                     paddingEnd = 12.dp,
                                     paddingTop = 6.dp,
                                     paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
+                                    borderColor = colorScheme.onSurface,
                                     borderWidth = 1.dp, // Grosor del borde
                                     modifier = Modifier
                                         .weight(1f)
@@ -491,7 +491,7 @@ fun PasoBodyFalsi() {
                                     paddingEnd = 12.dp,
                                     paddingTop = 6.dp,
                                     paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
+                                    borderColor = colorScheme.onSurface,
                                     borderWidth = 1.dp, // Grosor del borde
                                     modifier = Modifier
                                         .weight(1f)
@@ -499,14 +499,14 @@ fun PasoBodyFalsi() {
                                 )
                                 CurvedBorderText(
                                     text = "f(c${resultado.iteracion})",
-                                    textColor = Color.Red, // Color del texto personalizado
+                                    textColor = colorScheme.primary, // Color del texto personalizado
                                     backgroundColor = colorResource(id = R.color.azulunicauca),
                                     fontSize = 12.sp,
                                     paddingStart = 12.dp,
                                     paddingEnd = 12.dp,
                                     paddingTop = 6.dp,
                                     paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
+                                    borderColor = colorScheme.onSurface,
                                     borderWidth = 1.dp, // Grosor del borde
                                     modifier = Modifier
                                         .weight(1f)
@@ -525,14 +525,14 @@ fun PasoBodyFalsi() {
                             ) {
                                 CurvedBorderText(
                                     text = "${resultado.a}",
-                                    textColor = Color.Black, // Color del texto personalizado
+                                    textColor = colorScheme.onSurface, // Color del texto personalizado
                                     backgroundColor = colorResource(id = R.color.grisunicauca),
                                     fontSize = 10.sp,
                                     paddingStart = 12.dp,
                                     paddingEnd = 12.dp,
                                     paddingTop = 6.dp,
                                     paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
+                                    borderColor = colorScheme.onSurface,
                                     borderWidth = 1.dp, // Grosor del borde
                                     modifier = Modifier
                                         .weight(1f)
@@ -540,14 +540,14 @@ fun PasoBodyFalsi() {
                                 )
                                 CurvedBorderText(
                                     text = "${resultado.b}",
-                                    textColor = Color.Black, // Color del texto personalizado
+                                    textColor = colorScheme.onSurface, // Color del texto personalizado
                                     backgroundColor = colorResource(id = R.color.grisunicauca),
                                     fontSize = 10.sp,
                                     paddingStart = 12.dp,
                                     paddingEnd = 12.dp,
                                     paddingTop = 6.dp,
                                     paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
+                                    borderColor = colorScheme.onSurface,
                                     borderWidth = 1.dp, // Grosor del borde
                                     modifier = Modifier
                                         .weight(1f)
@@ -555,14 +555,14 @@ fun PasoBodyFalsi() {
                                 )
                                 CurvedBorderText(
                                     text = resultado.c.toString(),
-                                    textColor = Color.Red,
+                                    textColor = colorScheme.primary,
                                     backgroundColor = colorResource(id = R.color.grisunicauca),
                                     fontSize = 10.sp,
                                     paddingStart = 12.dp,
                                     paddingEnd = 12.dp,
                                     paddingTop = 6.dp,
                                     paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
+                                    borderColor = colorScheme.onSurface,
                                     borderWidth = 1.dp, // Grosor del borde
                                     modifier = Modifier
                                         .weight(1f)
@@ -570,14 +570,14 @@ fun PasoBodyFalsi() {
                                 )
                                 CurvedBorderText(
                                     text = "${evaluarFuncion(resultado.a.toString(), funcion.value)}",
-                                    textColor = Color.Black, // Color del texto personalizado
+                                    textColor = colorScheme.onSurface, // Color del texto personalizado
                                     backgroundColor = colorResource(id = R.color.grisunicauca),
                                     fontSize = 10.sp,
                                     paddingStart = 12.dp,
                                     paddingEnd = 12.dp,
                                     paddingTop = 6.dp,
                                     paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
+                                    borderColor = colorScheme.onSurface,
                                     borderWidth = 1.dp, // Grosor del borde
                                     modifier = Modifier
                                         .weight(1f)
@@ -585,14 +585,14 @@ fun PasoBodyFalsi() {
                                 )
                                 CurvedBorderText(
                                     text = "${evaluarFuncion(resultado.b.toString(), funcion.value)}",
-                                    textColor = Color.Black, // Color del texto personalizado
+                                    textColor = colorScheme.onSurface, // Color del texto personalizado
                                     backgroundColor = colorResource(id = R.color.grisunicauca),
                                     fontSize = 10.sp,
                                     paddingStart = 12.dp,
                                     paddingEnd = 12.dp,
                                     paddingTop = 6.dp,
                                     paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
+                                    borderColor = colorScheme.onSurface,
                                     borderWidth = 1.dp, // Grosor del borde
                                     modifier = Modifier
                                         .weight(1f)
@@ -600,14 +600,14 @@ fun PasoBodyFalsi() {
                                 )
                                 CurvedBorderText(
                                     text = "${evaluarFuncion(resultado.c.toString(), funcion.value)}",
-                                    textColor = Color.Red, // Color del texto personalizado
+                                    textColor = colorScheme.primary, // Color del texto personalizado
                                     backgroundColor = colorResource(id = R.color.grisunicauca),
                                     fontSize = 10.sp,
                                     paddingStart = 12.dp,
                                     paddingEnd = 12.dp,
                                     paddingTop = 6.dp,
                                     paddingBottom = 6.dp,
-                                    borderColor = Color.Black,
+                                    borderColor = colorScheme.onSurface,
                                     borderWidth = 1.dp, // Grosor del borde
                                     modifier = Modifier
                                         .weight(1f)
@@ -675,7 +675,6 @@ fun PasoBodyFalsi() {
                             )
                         }
 
-                        resultado.a = resultado.c
                         Box {
                             val relativeError = abs(resultado.c - resultado.previousA) / resultado.c
                             Text(
@@ -772,6 +771,17 @@ fun PasoBodyFalsi() {
                             val aDouble = a.value.toDouble()
                             val bDouble = b.value.toDouble()
 
+                            val faCheck = evaluarFuncion(aDouble.toString(), funcion.value)
+                            val fbCheck = evaluarFuncion(bDouble.toString(), funcion.value)
+                            if (faCheck * fbCheck > 0) {
+                                Toast.makeText(
+                                    context,
+                                    "La función debe tener signos opuestos en los puntos a y b",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                return@Button
+                            }
+
                             // Calculamos el nuevo punto
                             val result = calcularX2Falsi(
                                 a = aDouble,
@@ -811,16 +821,14 @@ fun PasoBodyFalsi() {
                             currentIndex++
 
                             // Evaluamos la función en los puntos necesarios
-                            val fa = evaluarFuncion(result.toString(), funcion.value)
+                            val fa = evaluarFuncion(aDouble.toString(), funcion.value)
                             val fc = evaluarFuncion(result.toString(), funcion.value)
 
-                            // Actualizar el intervalo solo si los valores son válidos
-                            if (fa != null && fc != null) {
-                                if (evaluarFuncion(aDouble.toString(), funcion.value)!! * fc < 0) {
-                                    b.value = result.toString()
-                                } else {
-                                    a.value = result.toString()
-                                }
+                            // Actualizar el intervalo según el signo de f(a)*f(c)
+                            if (fa * fc < 0) {
+                                b.value = result.toString()
+                            } else {
+                                a.value = result.toString()
                             }
 
                             // Verificamos si debemos continuar

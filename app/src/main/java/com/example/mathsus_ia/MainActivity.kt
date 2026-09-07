@@ -21,6 +21,7 @@ import com.example.mathsus.ui.features.nav_menu_secante.InformationSecante
 import com.example.mathsus.ui.features.nav_menu_secante.PasoSecante
 import com.example.mathsus_ia.ui.features.BisectionScreen
 import com.example.mathsus_ia.ui.features.FalsiScreen
+import com.example.mathsus_ia.ui.features.FeedbackScreen
 import com.example.mathsus_ia.ui.features.Info
 import com.example.mathsus_ia.ui.features.NewtonScreen
 import com.example.mathsus_ia.ui.features.SecanteScreen
@@ -67,6 +68,7 @@ class MainActivity : ComponentActivity() {
                         composable(route = "exerciseFalsi") {ExerciseFalsi(navController = navController) }
 
                         composable(route = "info") { Info(navController = navController) }
+                        composable(route = "feedback") { FeedbackScreen(navController = navController) }
 
                         composable(route = "baking") { BakingScreen(navController = navController) }
 

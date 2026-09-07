@@ -49,12 +49,11 @@ fun Info(
             ) {
                 Text(
                     text = "Sobre MATHSUS",
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(2.dp, Color.Blue)
                         .padding(8.dp),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineMedium,
                     textAlign = TextAlign.Center
                 )
             }
@@ -71,7 +70,7 @@ fun Info(
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    Information()
+                    Information(navController = navController)
                 }
             }
         },
@@ -81,7 +80,7 @@ fun Info(
 }
 
 @Composable
-fun Information() {
+fun Information(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,7 +89,7 @@ fun Information() {
     ) {
 
         Text(
-            text = "Version 1.0.0",
+            text = "Version ${io.github.jesusgurrute.mathsus_ia.BuildConfig.VERSION_NAME}",
             fontSize = 18.sp
         )
 
@@ -116,7 +115,7 @@ fun Information() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "MATHSUS es una herramienta matemática diseñada para estudiantes, ingenieros e investigadores que necesitan encontrar raíces de funciones no lineales en una variable. Esta aplicación implementa tres métodos numéricos populares - Bisección, Newton-Raphson y Secante.",
+            text = "MATHSUS es una herramienta matemática diseñada para estudiantes, ingenieros e investigadores que necesitan encontrar raíces de funciones no lineales en una variable. Esta aplicación implementa cuatro métodos numéricos populares - Bisección, Regla Falsa (Falsi), Newton-Raphson y Secante.",
             fontSize = 16.sp, textAlign = TextAlign.Justify
         )
 
@@ -131,7 +130,7 @@ fun Information() {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "1. Resuelve ecuaciones utilizando los métodos de Bisección, Newton-Raphson o Secante\n" +
+            text = "1. Resuelve ecuaciones utilizando los métodos de Bisección, Regla Falsa, Newton-Raphson o Secante\n" +
                     "2. Introduce funciones personalizadas con una interfaz fácil de usar.\n" +
                     "3. Visualiza el proceso de búsqueda de raíces con gráficos interactivos.\n" +
                     "4. Compara la eficiencia y precisión de los diferentes métodos.\n" +
@@ -328,8 +327,43 @@ fun Information() {
         )
 
         Text(
-            text = "jesusalirio@unicauca.edu.co",
+            text = "¿Encontraste un error o tienes una sugerencia? Usa el botón de feedback: llega directo al equipo de desarrollo.",
+            modifier = Modifier.padding(top = 8.dp),
+            textAlign = TextAlign.Justify
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = { navController.navigate("feedback") }) {
+            Text(text = "Enviar feedback para la próxima versión")
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Apoya este proyecto",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Text(
+            text = "MATHSUS es gratis y sin ánimo de lucro. Si te sirvió y quieres ayudar a mantenerlo (servidor, IA, cuenta de desarrollador), cualquier aporte voluntario es bienvenido.",
+            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+            textAlign = TextAlign.Justify
+        )
+
+        val donationContext = LocalContext.current
+        Button(
+            onClick = {
+                val intent = android.content.Intent(
+                    android.content.Intent.ACTION_VIEW,
+                    android.net.Uri.parse("https://paypal.me/jesusgurrute")
+                )
+                donationContext.startActivity(intent)
+            }
+        ) {
+            Text(text = "Apoyar con PayPal")
+        }
     }
 }
 

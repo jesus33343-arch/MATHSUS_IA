@@ -1,11 +1,8 @@
 <resources>
     <string name="app_name">MATHSUS_IA</string>
-    <string name="action_go">Ir</string>
+    <string name="action_go">Preguntar</string>
     <string name="ia_title">MATHSUS con IA</string>
-    <string name="label_prompt">Pregunta a MATHSUS</string>
-    <string name="prompt_placeholder">-</string>
-    <string name="image1_description">Cupcake</string>
-    <string name="image2_description">Cookies</string>
-    <string name="image3_description">Cake</string>
-    <string name="results_placeholder">(La respuesta aparecera aquí)</string>
+    <string name="label_prompt">Escribe tu función o tu pregunta sobre bisección, regla falsa, Newton-Raphson o secante</string>
+    <string name="prompt_placeholder"></string>
+    <string name="results_placeholder">(La respuesta aparecerá aquí)</string>
 </resources>

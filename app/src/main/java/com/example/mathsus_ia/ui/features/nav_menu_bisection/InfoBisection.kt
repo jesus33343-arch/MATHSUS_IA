@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
 //noinspection UsingMaterialAndMaterial3Libraries
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.runtime.Composable
@@ -255,7 +256,7 @@ fun InfoBisection() {
 
         Text(
             text = "Se necesita un método numérico general que no dependa de las propiedades especiales de nuestras funciones. Por supuesto, la continuidad y la derivabilidad son propiedades especiales, pero son atributos comunes de funciones que normalmente se encuentran. La clase de propiedad especial que quizá no podemos aprovechar fácilmente en códigos de propósito general está tipificado por la identidad trigonométrica mencionada en párrafos atrás.\n" +
-                    "\nCientos de métodos están disponibles para localizar ceros de funciones y se han seleccionado tres de los más útiles para estudiarlos aquí: el método de bisección, el método de Newton y el método de la secante.\n" +
+                    "\nCientos de métodos están disponibles para localizar ceros de funciones y se han seleccionado tres de los más útiles para estudiarlos aquí: el método de Bisección, el método de Newton y el método de la Secante.\n" +
                     "\nSea f una función que tiene valores de signos opuestos en los dos extremos de un intervalo. Suponga también que f es continua en ese intervalo. Para fijar la notación, sea a < b y f (a) f (b) < 0. Por ello f tiene una raíz en el intervalo (a, b). En otras palabras, debe existir un número r que satisface las dos condiciones a < r < b y f (r) = 0. ¿Cómo se llegó a esta conclusión? Se debe recordar el teorema del valor intermedio.* Si x recorre un intervalo [a, b], entonces los valores de f (x) llenan por completo el intervalo entre f (a) y f (b). No se pueden omitir los valores intermedios. Por tanto, una función específica f debe tomar el valor cero en alguna parte del intervalo (a, b), ya que f (a) y f (b) son de signos opuestos.",
             textAlign = TextAlign.Justify
         )
@@ -264,14 +265,14 @@ fun InfoBisection() {
 
         Text(
             text = "Ejemplos",
-            color = Color.Blue,
+            color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Justify
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Ahora queremos mostrar cómo se pueden usar el seudocódigo de la bisección. Suponga que tenemos dos funciones y para cada una buscamos un cero en un intervalo dado:",
+            text = "Ahora queremos mostrar cómo se pueden usar el seudocódigo de la Bisección. Suponga que tenemos dos funciones y para cada una buscamos un cero en un intervalo dado:",
 
             textAlign = TextAlign.Justify
         )
@@ -290,8 +291,8 @@ fun InfoBisection() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Primero, escribimos dos funciones de procedimiento para calcular f (x) y g (x). Después introducimos los intervalos iniciales y el número de pasos que se darán en el programa principal. Puesto que se trata de un ejemplo sencillo, está información se podría asignar directamente en el programa principal o con expresiones en los subprogramas más que para que la lea el programa. También, según el lenguaje de computadora que se esté usando, se necesita un enunciado o interface externos para decirle al compilador que el parámetro f en el procedimiento de la bisección no es una variable ordinaria con valores numéricos sino el nombre de una función de procedimiento definida externamente del programa principal. En este ejemplo, habría dos de estas funciones de procedimiento y dos llamadas al procedimiento de la bisección\n" +
-                    "\nLos resultados de computadora para los pasos iterativos del método de bisección para f(x):",
+            text = "Primero, escribimos dos funciones de procedimiento para calcular f (x) y g (x). Después introducimos los intervalos iniciales y el número de pasos que se darán en el programa principal. Puesto que se trata de un ejemplo sencillo, está información se podría asignar directamente en el programa principal o con expresiones en los subprogramas más que para que la lea el programa. También, según el lenguaje de computadora que se esté usando, se necesita un enunciado o interface externos para decirle al compilador que el parámetro f en el procedimiento de la Bisección no es una variable ordinaria con valores numéricos sino el nombre de una función de procedimiento definida externamente del programa principal. En este ejemplo, habría dos de estas funciones de procedimiento y dos llamadas al procedimiento de la Bisección\n" +
+                    "\nLos resultados de computadora para los pasos iterativos del método de Bisección para f(x):",
             textAlign = TextAlign.Justify
         )
 

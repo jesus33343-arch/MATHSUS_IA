@@ -82,31 +82,31 @@ fun ExerSecante() {
         verticalArrangement = Arrangement.Top
     ) {
         androidx.compose.material3.Text(
-            text = "1. Si usamos el método de la secante en f(x) = x^3 – 2x + 2 iniciando con x₀ = 0 y x1 = 1, ¿a qué es igual x2?",
+            text = "1. Si usamos el método de la Secante en f(x) = x^3 – 2x + 2 iniciando con x₀ = 0 y x1 = 1, ¿a qué es igual x2?",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
             )
         Spacer(modifier = Modifier.height(16.dp))
         androidx.compose.material3.Text(
-            text = "2. Si el método de la secante se usa en f(x) = x^5 + x^3 + 3 y si x_(n–2) = 0 y x_(n–1) = 0, ¿a qué es igual x_(n–1)?",
+            text = "2. Si el método de la Secante se usa en f(x) = x^5 + x^3 + 3 y si x_(n–2) = 0 y x_(n–1) = 0, ¿a qué es igual x_(n–1)?",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
             )
         Spacer(modifier = Modifier.height(16.dp))
         androidx.compose.material3.Text(
-            text = "3. Usando el método de bisección, el método de Newton y el método de la secante, encuentre la raíz positiva más grande correcta a tres lugares decimales de x^3 – 5x + 3 = 0. (Todas raíces están en [–3, +3]).",
+            text = "3. Usando el método de Bisección, el método de Newton y el método de la Secante, encuentre la raíz positiva más grande correcta a tres lugares decimales de x^3 – 5x + 3 = 0. (Todas raíces están en [–3, +3]).",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
             )
         Spacer(modifier = Modifier.height(16.dp))
         androidx.compose.material3.Text(
-            text = "4. Use el método de la secante para encontrar el cero cerca de –0.5 de f(x) = e^x – 3x^2. Esta función también tiene un cero cerca de 4. Encuentre este cero positivo usando el método de Newton.",
+            text = "4. Use el método de la Secante para encontrar el cero cerca de –0.5 de f(x) = e^x – 3x^2. Esta función también tiene un cero cerca de 4. Encuentre este cero positivo usando el método de Newton.",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
             )
         Spacer(modifier = Modifier.height(16.dp))
         androidx.compose.material3.Text(
-            text = "5. Comparar el método de la secante con el método de Newton para determinar una raíz de cada función",
+            text = "5. Comparar el método de la Secante con el método de Newton para determinar una raíz de cada función",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
             )
@@ -120,25 +120,25 @@ fun ExerSecante() {
         )
         Spacer(modifier = Modifier.height(16.dp))
         androidx.compose.material3.Text(
-            text = "Use el valor x1 del método de Newton como el segundo punto de inicio para el método de la secante. Imprima cada iteración para los dos métodos",
+            text = "Use el valor x1 del método de Newton como el segundo punto de inicio para el método de la Secante. Imprima cada iteración para los dos métodos",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
             )
         Spacer(modifier = Modifier.height(16.dp))
         androidx.compose.material3.Text(
-            text = "6. Encontrar la raíz de f (x) = x^3 + 2x^2 + 10x – 20 usando el método de la secante con valores iniciales x0 = 2 y x1 = – 1. Déjelo correr a lo más 20 pasos e incluya también una prueba de parada. Compare el número de pasos necesario aquí con el número de pasos necesarios con el método de Newton. ¿La convergencia es cuadrática?",
+            text = "6. Encontrar la raíz de f (x) = x^3 + 2x^2 + 10x – 20 usando el método de la Secante con valores iniciales x0 = 2 y x1 = – 1. Déjelo correr a lo más 20 pasos e incluya también una prueba de parada. Compare el número de pasos necesario aquí con el número de pasos necesarios con el método de Newton. ¿La convergencia es cuadrática?",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
             )
         Spacer(modifier = Modifier.height(16.dp))
         androidx.compose.material3.Text(
-            text = "6. Encontrar la raíz de f (x) = x^3 + 2x^2 + 10x – 20 usando el método de la secante con valores iniciales x0 = 2 y x1 = – 1. Déjelo correr a lo más 20 pasos e incluya también una prueba de parada. Compare el número de pasos necesario aquí con el número de pasos necesarios con el método de Newton. ¿La convergencia es cuadrática?",
+            text = "6. Encontrar la raíz de f (x) = x^3 + 2x^2 + 10x – 20 usando el método de la Secante con valores iniciales x0 = 2 y x1 = – 1. Déjelo correr a lo más 20 pasos e incluya también una prueba de parada. Compare el número de pasos necesario aquí con el número de pasos necesarios con el método de Newton. ¿La convergencia es cuadrática?",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
             )
         Spacer(modifier = Modifier.height(16.dp))
         androidx.compose.material3.Text(
-            text = "7. Pruebe el método de la secante con el conjunto de funciones f(x) = 2e^(–k)x + 1 – 3e^(–kx) para k = 1, 2, 3, . . . , 10. Use los puntos de inicio 0 y 1 en cada caso",
+            text = "7. Pruebe el método de la Secante con el conjunto de funciones f(x) = 2e^(–k)x + 1 – 3e^(–kx) para k = 1, 2, 3, . . . , 10. Use los puntos de inicio 0 y 1 en cada caso",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
             )
@@ -158,7 +158,7 @@ fun ExerSecante() {
         )
         Spacer(modifier = Modifier.height(16.dp))
         androidx.compose.material3.Text(
-            text = "que se conoce como el polinomio de Wilkinson. Los ceros de f son, por supuesto, los enteros 1, 2, . . . , 20. Trate de determinar qué le ocurre al cero r = 20 cuando la función se altera como f(x) – 10^(–8)x^(19). Sugerencia: el método de la secante en doble precisión localizará un cero en el intervalo [20, 21].",
+            text = "que se conoce como el polinomio de Wilkinson. Los ceros de f son, por supuesto, los enteros 1, 2, . . . , 20. Trate de determinar qué le ocurre al cero r = 20 cuando la función se altera como f(x) – 10^(–8)x^(19). Sugerencia: el método de la Secante en doble precisión localizará un cero en el intervalo [20, 21].",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
             )

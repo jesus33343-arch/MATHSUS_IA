@@ -46,7 +46,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -63,7 +62,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mathsus.ui.features.nav_menu_secante.ResultadoSecante
-import io.github.jesusgurrute.mathsus_ia.R
 import com.example.mathsus_ia.ui.methods.FunctionGraph
 import com.example.mathsus_ia.ui.methods.GraphViewModel
 import org.mariuszgromada.math.mxparser.Function
@@ -523,7 +521,7 @@ fun PasoBodySecante() {
             ) {
                 Column {
                     Card(
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F0F0)),
+                        colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceVariant),
                         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                     ) {
                         Column(modifier = Modifier.padding(12.dp)) {
@@ -732,6 +730,7 @@ fun metodoSecantePaso(
 
 @Composable
 fun formatearValor(valor: Double): String {
+    if (!valor.isFinite()) return "N/D"
     return if ((valor >= 1e6 || (valor <= 1e-4 && valor != 0.0))) {
         // Formatear con notación científica y luego convertir "E" a "×10^"
         val valorFormateado = String.format(Locale.US, "%.6e", valor)
@@ -766,7 +765,7 @@ fun IteracionResultCard(
             Text(
 
                 text = "Iteración ${resultado.iteracion + 1}",
-                color = colorResource(id = R.color.rojounicauca),
+                color = colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
@@ -784,26 +783,26 @@ fun IteracionResultCard(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(colorResource(id = R.color.azulunicauca))
+                        .background(colorScheme.primary)
                         .padding(8.dp)
                 ) {
                     Text(
                         text = "x0",
-                        color = Color.White,
+                        color = colorScheme.onPrimary,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "x1",
-                        color = Color.White,
+                        color = colorScheme.onPrimary,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "x${resultado.iteracion + 2}",
-                        color = Color.White,
+                        color = colorScheme.onPrimary,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
@@ -838,7 +837,7 @@ fun IteracionResultCard(
                         text = x2Formatted,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
-                        color = colorResource(id = R.color.rojounicauca),
+                        color = colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -847,26 +846,26 @@ fun IteracionResultCard(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(colorResource(id = R.color.azulunicauca))
+                        .background(colorScheme.primary)
                         .padding(8.dp)
                 ) {
                     Text(
                         text = "f(x0)",
-                        color = Color.White,
+                        color = colorScheme.onPrimary,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "f(x1)",
-                        color = Color.White,
+                        color = colorScheme.onPrimary,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "f(x${resultado.iteracion + 2})",
-                        color = Color.White,
+                        color = colorScheme.onPrimary,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
@@ -902,7 +901,7 @@ fun IteracionResultCard(
                         text = fx2Formatted,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
-                        color = colorResource(id = R.color.rojounicauca),
+                        color = colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -932,7 +931,7 @@ fun IteracionResultCard(
                     "El error es mayor que la tolerancia ($toleranciaFormatted). Se continúa el proceso.",
                 fontSize = 14.sp,
                 fontWeight = if (haConvergido) FontWeight.Bold else FontWeight.Normal,
-                color = if (haConvergido) colorResource(id = R.color.rojounicauca) else colorScheme.onSurfaceVariant
+                color = if (haConvergido) colorScheme.primary else colorScheme.onSurfaceVariant
             )
 
         }
@@ -979,21 +978,6 @@ fun MathFormulaView(latex: String, modifier: Modifier = Modifier) {
 
 
 @SuppressLint("DefaultLocale")
-fun calcularX2Secante(x0: Double, x1: Double, f: String): Double {
-
-    val fx0 = evaluarFuncion(x0.toString(), f)
-    val fx1 = evaluarFuncion(x1.toString(), f)
-    if (fx1 - fx0 == 0.0) {
-        throw IllegalArgumentException("División por cero detectada durante el cálculo.")
-    }
-    val x2 = x1 - (((x1 - x0) / (fx1 - fx0)) * fx1)
-
-    val roundx2 = String.format("%.4f", x2)
-
-    return roundx2.toDouble()
-}
-
-@SuppressLint("DefaultLocale")
 fun evaluarFuncion(a: String, f: String): Double {
     val f = Function("f", f, "x")
     val fa = org.mariuszgromada.math.mxparser.Expression("f(${a})", f).calculate()
@@ -1004,9 +988,9 @@ fun evaluarFuncion(a: String, f: String): Double {
 @Composable
 fun CurvedBorderText(
     text: String,
-    textColor: Color = Color.White,
-    backgroundColor: Color = colorResource(id = R.color.azulunicauca),
-    borderColor: Color = Color.Black,
+    textColor: Color = MaterialTheme.colorScheme.onPrimary,
+    backgroundColor: Color = MaterialTheme.colorScheme.primary,
+    borderColor: Color = MaterialTheme.colorScheme.outline,
     borderRadius: Dp = 0.dp,
     borderWidth: Dp = 1.dp,
     fontWeight: FontWeight = FontWeight.Bold,

@@ -16,6 +16,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,7 +29,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mathsus_ia.data.CalculationEventSubmission
+import com.example.mathsus_ia.data.CalculationParams
+import com.example.mathsus_ia.data.DeviceIdentity
+import com.example.mathsus_ia.data.logCalculationEvent
+import com.example.mathsus_ia.ui.methods.ResultFeedback
 import com.example.mathsus_ia.ui.methods.secanteMethod.CurvedBorderText
+import io.github.jesusgurrute.mathsus_ia.BuildConfig
 import io.github.jesusgurrute.mathsus_ia.R
 import com.example.mathsus_ia.ui.methods.Metodo
 import org.mariuszgromada.math.mxparser.mathcollection.MathFunctions.abs
@@ -39,6 +51,7 @@ fun Bisection(
     epsilon: Double,
 ) {
     val context = LocalContext.current
+    var calculationEventId by remember(f, a, b, MaxIter, epsilon) { mutableStateOf<String?>(null) }
 
     // Initial validation
     val fa = Metodo(a = a, f = f)
@@ -70,6 +83,8 @@ fun Bisection(
             var currentXu = b
             var previousXr = 0.0
             var iter = 0
+            var finalRoot = 0.0
+            var finalIter = 0
 
             while (true) {
                 // Calculate midpoint
@@ -95,10 +110,12 @@ fun Bisection(
                 )
 
                 // Update interval
+                var done = false
                 when {
                     fr == 0.0 -> {
-                        showResult(context, f, currentXr, iter)
-                        return
+                        finalRoot = currentXr
+                        finalIter = iter
+                        done = true
                     }
                     sign(fl) * sign(fr) < 0 -> {
                         currentXu = currentXr
@@ -109,13 +126,34 @@ fun Bisection(
                 }
 
                 // Check stopping criteria
-                if (ea <= epsilon || iter >= MaxIter) {
-                    showResult(context, f, currentXr, iter)
-                    return
+                if (done || ea <= epsilon || iter >= MaxIter) {
+                    finalRoot = currentXr
+                    finalIter = iter
+                    break
                 }
 
                 previousXr = currentXr
             }
+
+            showResult(context, f, finalRoot, finalIter)
+
+            LaunchedEffect(f, a, b, MaxIter, epsilon) {
+                calculationEventId = logCalculationEvent(
+                    CalculationEventSubmission(
+                        deviceId = DeviceIdentity.getOrCreateDeviceId(context),
+                        method = "bisection",
+                        functionExpr = f,
+                        params = CalculationParams(a = a, b = b, tolerance = epsilon, maxIterations = MaxIter),
+                        rootValue = finalRoot,
+                        iterations = finalIter,
+                        localeCountry = DeviceIdentity.localeCountry(),
+                        timezone = DeviceIdentity.timezoneId(),
+                        appVersion = BuildConfig.VERSION_NAME
+                    )
+                )
+            }
+
+            ResultFeedback(calculationEventId)
         }
     }
 }
@@ -224,7 +262,7 @@ fun FormatNumber(value: Double): String {
 private fun DataCell(text: String) {
     CurvedBorderText(
         text = text,
-        textColor = Color.Black,
+        textColor = MaterialTheme.colorScheme.onSurface,
         backgroundColor = colorResource(id = R.color.grisunicauca),
         fontSize = 10.sp,
         paddingStart = 12.dp,
@@ -245,52 +283,3 @@ private fun showResult(context: Context, f: String, root: Double, iterations: In
     ).show()
 }
 
-/*
-error = currentXu - currentXl
-
-            while (iter <= 200) {
-                error /= 2
-                p = currentXl + error
-                fp = Metodo(a = p, f = f)
-
-                val roundc = String.format("%.4f", p)
-
-                val roundfc = String.format("%.4e", fp)
-                val parts = roundfc.split("e")
-                val coefficient = parts[0].toDouble()
-                val exponent = parts[1].toInt()
-                // Quitar ceros adicionales si es necesario
-                val trimmedCoefficient = if (coefficient % 1 == 0.0) {
-                    coefficient.toInt().toString()
-                } else {
-                    parts[0].replace(Regex("0*$"), "")
-                }
-
-                val rounderror = String.format("%.4e", error)
-                val partserror = rounderror.split("e")
-                val coefficienterror = partserror[0].toDouble()
-                val exponenterror = partserror[1].toInt()
-                val errorCoefficient = if (coefficienterror % 1 == 0.0) {
-                    coefficienterror.toInt().toString()
-                } else {
-                    partserror[0].replace(Regex("0*$"), "")
-                }
-
-
-
-
-                if (abs(error) < epsilon) {
-                    Text("La función $f tiene raiz en $roundc")
-                    return
-                }
-
-                if (fl.sign != Metodo(a = p, f = f).sign) {
-                    currentXu = p
-                    fu = Metodo(a = p, f = f)
-                } else {
-                    currentXl = p
-                    fl = Metodo(a = p, f = f)
-                }
-                iter++
-            }
- */

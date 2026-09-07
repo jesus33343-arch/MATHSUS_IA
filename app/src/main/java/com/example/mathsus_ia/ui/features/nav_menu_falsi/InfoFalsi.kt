@@ -99,14 +99,14 @@ fun InfoFalsi() {
     ) {
 
         Text(
-            text = "Método de falsa posición\n" ,
+            text = "Método de Falsa Posición\n" ,
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF000080),
+            color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Justify
         )
         Text(
-            text = "Aun cuando la bisección es una técnica perfectamente válida para determinar raíces, su\n" +
-                    "método de aproximación por “fuerza bruta” es relativamente ineficiente. La falsa posición\n" +
+            text = "Aun cuando la Bisección es una técnica perfectamente válida para determinar raíces, su\n" +
+                    "método de aproximación por “fuerza bruta” es relativamente ineficiente. La Falsa Posición\n" +
                     "es una alternativa basada en una visualización gráfica.",
             textAlign = TextAlign.Justify
         )
@@ -114,13 +114,13 @@ fun InfoFalsi() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Un inconveniente del método de bisección es que al dividir el intervalo de (a,b) en mitades iguales,\n" +
+            text = "Un inconveniente del método de Bisección es que al dividir el intervalo de (a,b) en mitades iguales,\n" +
                     "no se toman en consideración las magnitudes de f(a) y f(b). Por ejemplo, si f(a) está mucho más\n" +
                     "cercana a cero que f(b), es lógico que la raíz se encuentre más cerca de 'a' que de 'b'.\n" +
                     "Un método alternativo que aprovecha esta visualización gráfica consiste en unir f(a) y f(b) \n" +
                     "con una línea recta.La intersección de esta línea con el eje de las x representa una mejor \n" +
                     "aproximación de la raíz. El hecho de que se reemplace la curva por una línea recta da una\n" +
-                    "“falsa posición” de la raíz; de aquí el nombre de método de la falsa posición, o en latín,\n" +
+                    "“Falsa Posición” de la raíz; de aquí el nombre de método de la Falsa Posición, o en latín,\n" +
                     "regula falsi. También se le conoce como método de interpolacion lineal.\n",
             textAlign = TextAlign.Justify
         )
@@ -164,10 +164,10 @@ fun InfoFalsi() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Ésta es la fórmula de la falsa posición. El valor de 'c' se reemplazará, después, a cualquiera de los dos valores iniciales, 'a'\n" +
+            text = "Ésta es la fórmula de la Falsa Posición. El valor de 'c' se reemplazará, después, a cualquiera de los dos valores iniciales, 'a'\n" +
                     " o 'b', y da un valor de la función con el mismo signo de f(c). De esta manera, los valores 'a'\n" +
                     " y 'b' siempre encierran la verdadera raíz. El proceso se repite hasta que la aproximación a la raíz sea adecuada.\n" +
-                    "El algoritmo es idéntico al de la bisección. Además, se usa el mismo criterio de terminación.\n",
+                    "El algoritmo es idéntico al de la Bisección. Además, se usa el mismo criterio de terminación.\n",
             textAlign = TextAlign.Justify
         )
         Surface(
@@ -179,18 +179,18 @@ fun InfoFalsi() {
         }
 
         Text(
-            text = "Desventajas del método de la falsa posición.\n",
+            text = "Desventajas del método de la Falsa Posición.\n",
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF000080),
+            color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Justify
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Aunque el método de la falsa posición parecería ser siempre la mejor opción entre los\n" +
+            text = "Aunque el método de la Falsa Posición parecería ser siempre la mejor opción entre los\n" +
                     "métodos cerrados, hay casos donde funciona de manera deficiente. En efecto, como en\n" +
-                    "el ejemplo siguiente, hay ciertos casos donde el método de bisección ofrece mejores\n" +
+                    "el ejemplo siguiente, hay ciertos casos donde el método de Bisección ofrece mejores\n" +
                     "resultados.\n" ,
             textAlign = TextAlign.Justify
         )
@@ -199,14 +199,14 @@ fun InfoFalsi() {
         Text(
             text = "Planteamiento del problema.\n" ,
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF000080),
+            color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Justify
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Con los métodos de bisección y de falsa posición localice la raíz de\n" ,
+            text = "Con los métodos de Bisección y de Falsa Posición localice la raíz de\n" ,
             textAlign = TextAlign.Justify
         )
 
@@ -227,7 +227,7 @@ fun InfoFalsi() {
         Text(
             text = "Solución\n" ,
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF000080),
+            color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Justify
         )
 
@@ -253,7 +253,7 @@ fun InfoFalsi() {
 
         Text(
             text = "De esta manera, después de cinco iteraciones, el error verdadero se reduce a menos del\n" +
-                    "2%. Con la falsa posición se obtienen resultados muy diferentes:\n" ,
+                    "2%. Con la Falsa Posición se obtienen resultados muy diferentes:\n" ,
             textAlign = TextAlign.Justify
         )
 
@@ -270,7 +270,7 @@ fun InfoFalsi() {
             text = "Después de cinco iteraciones, el error verdadero sólo se ha reducido al 59%. Además, observe que\n" +
                     "ea < et. Entonces, el error aproximado es engañoso. Se obtiene mayor claridad sobre estos \n" +
                     "resultados examinando  una gráfica de la función. En la curva viola la premisa sobre la  \n" +
-                    "cual se basa la falsa posición; es decir, si f(a) se encuentra mucho más cerca de cero que \n" +
+                    "cual se basa la Falsa Posición; es decir, si f(a) se encuentra mucho más cerca de cero que \n" +
                     "f(b), la raíz se encuentra más cerca de 'a' que de 'b'. Sin embargo, debido a la forma de" +
                     " esta función ocurre lo contrario.\n" ,
             textAlign = TextAlign.Justify
@@ -279,8 +279,8 @@ fun InfoFalsi() {
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "El ejemplo anterior ilustra que, por lo común, no es posible realizar generalizaciones\n" +
-                    "con los métodos de obtención de raíces. Aunque un método como el de la falsa posición\n" +
-                    "casi siempre es superior al de bisección, hay algunos casos que violan esta conclusión\n" +
+                    "con los métodos de obtención de raíces. Aunque un método como el de la Falsa Posición\n" +
+                    "casi siempre es superior al de Bisección, hay algunos casos que violan esta conclusión\n" +
                     "general. Por lo tanto, además de usar la ecuación, los resultados se deben verificar\n" +
                     "sustituyendo la raíz aproximada en la ecuación original y determinar si el resultado se\n" +
                     "acerca a cero. Esta prueba se debe incorporar en todos los programas que localizan\n" +
@@ -291,7 +291,7 @@ fun InfoFalsi() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "El ejemplo ilustra también una importante desventaja del método de la falsa posición:\n" +
+            text = "El ejemplo ilustra también una importante desventaja del método de la Falsa Posición:\n" +
                     "su unilateralidad. Es decir, conforme se avanza en las iteraciones, uno de los puntos\n" +
                     "limitantes del intervalo tiende a permanecer fijo. Esto puede llevar a una mala convergencia," +
                     "especialmente en funciones con una curvatura importante. \n",
@@ -304,6 +304,8 @@ fun InfoFalsi() {
 
 @Composable
 fun GraphPlot() {
+    val axisColor = MaterialTheme.colorScheme.onSurface
+    val curveColor = MaterialTheme.colorScheme.primary
     Canvas(modifier = Modifier.fillMaxWidth().height(300.dp)) {
         val width = size.width
         val height = size.height
@@ -332,8 +334,8 @@ fun GraphPlot() {
         val yAxisHeight = yR
 
         // Dibujar ejes coordenados
-        drawLine(Color.Black, Offset(xMin * 0.5f, height), Offset(xMin * 0.5f, 0f), strokeWidth = 5f)
-        drawLine(Color.Black, Offset(0f, yAxisHeight), Offset(width, yAxisHeight), strokeWidth = 5f)
+        drawLine(axisColor, Offset(xMin * 0.5f, height), Offset(xMin * 0.5f, 0f), strokeWidth = 5f)
+        drawLine(axisColor, Offset(0f, yAxisHeight), Offset(width, yAxisHeight), strokeWidth = 5f)
 
         // Dibujar curva azul
         val path = Path().apply {
@@ -342,10 +344,10 @@ fun GraphPlot() {
                 lineTo(x.toFloat(), f(x.toFloat()))
             }
         }
-        drawPath(path, Color.Blue, style = Stroke(width = 4f))
+        drawPath(path, curveColor, style = Stroke(width = 4f))
 
-        // Dibujar línea recta negra
-        drawLine(Color.Black, Offset(xL, yL), Offset(xU, yU), strokeWidth = 4f)
+        // Dibujar línea recta
+        drawLine(axisColor, Offset(xL, yL), Offset(xU, yU), strokeWidth = 4f)
 
         // Sombreado entre línea recta y curva
         val shadedPath = Path().apply {
@@ -355,10 +357,10 @@ fun GraphPlot() {
             lineTo(xL, f(xL))
             close()
         }
-        drawPath(shadedPath, Color.Black.copy(alpha = 0.2f))
+        drawPath(shadedPath, axisColor.copy(alpha = 0.2f))
 
         // Dibujar puntos clave
-        val pointColor = Color.Black
+        val pointColor = axisColor
         listOf(Offset(xL, yL), Offset(xU, yU), Offset(xR, yR)).forEach { point ->
             drawCircle(pointColor, radius = 8f, center = point)
         }

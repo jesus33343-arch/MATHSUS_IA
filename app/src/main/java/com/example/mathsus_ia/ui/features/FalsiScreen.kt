@@ -65,7 +65,7 @@ fun FalsiScreen(navController: NavHostController) {
         }
     ) {
         Scaffold(
-            topBar = { TopBar("Método de regular falsi", scope, drawerState) },
+            topBar = { TopBar("Método de Regular Falsi", scope, drawerState) },
             content = { padding ->
                 Box(modifier = Modifier.fillMaxSize()) {
                     Image(

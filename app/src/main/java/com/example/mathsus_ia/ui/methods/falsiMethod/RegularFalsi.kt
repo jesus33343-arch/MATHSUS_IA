@@ -16,7 +16,13 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,7 +30,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mathsus_ia.data.CalculationEventSubmission
+import com.example.mathsus_ia.data.CalculationParams
+import com.example.mathsus_ia.data.DeviceIdentity
+import com.example.mathsus_ia.data.logCalculationEvent
+import com.example.mathsus_ia.ui.methods.ResultFeedback
 import com.example.mathsus_ia.ui.methods.secanteMethod.CurvedBorderText
+import io.github.jesusgurrute.mathsus_ia.BuildConfig
 import io.github.jesusgurrute.mathsus_ia.R
 import com.example.mathsus_ia.ui.methods.Metodo
 import org.mariuszgromada.math.mxparser.mathcollection.MathFunctions.abs
@@ -54,9 +66,10 @@ fun RegularFalsi(
     var iu = 0
 
     val context = LocalContext.current
+    var calculationEventId by remember(f, a, b, MaxIter, epsilon) { mutableStateOf<String?>(null) }
 
     // Validar que los puntos inicial y final tienen signos opuestos
-    if (currentFl * currentXu > 0) {
+    if (currentFl * currentFu > 0) {
         Toast.makeText(
             context,
             "La función debe tener signos opuestos en los puntos a y b",
@@ -93,7 +106,7 @@ fun RegularFalsi(
                     paddingEnd = 6.dp,
                     paddingTop = 6.dp,
                     paddingBottom = 6.dp,
-                    borderColor = Color.Black,
+                    borderColor = MaterialTheme.colorScheme.onSurface,
                     borderWidth = 1.dp, // Grosor del borde
                     modifier = Modifier
                         .weight(0.3f)
@@ -108,7 +121,7 @@ fun RegularFalsi(
                     paddingEnd = 12.dp,
                     paddingTop = 6.dp,
                     paddingBottom = 6.dp,
-                    borderColor = Color.Black,
+                    borderColor = MaterialTheme.colorScheme.onSurface,
                     borderWidth = 1.dp, // Grosor del borde
                     modifier = Modifier
                         .weight(1f)
@@ -123,7 +136,7 @@ fun RegularFalsi(
                     paddingEnd = 12.dp,
                     paddingTop = 6.dp,
                     paddingBottom = 6.dp,
-                    borderColor = Color.Black,
+                    borderColor = MaterialTheme.colorScheme.onSurface,
                     borderWidth = 1.dp, // Grosor del borde
                     modifier = Modifier
                         .weight(1f)
@@ -138,7 +151,7 @@ fun RegularFalsi(
                     paddingEnd = 12.dp,
                     paddingTop = 6.dp,
                     paddingBottom = 6.dp,
-                    borderColor = Color.Black,
+                    borderColor = MaterialTheme.colorScheme.onSurface,
                     borderWidth = 1.dp, // Grosor del borde
                     modifier = Modifier
                         .weight(1f)
@@ -153,7 +166,7 @@ fun RegularFalsi(
                     paddingEnd = 12.dp,
                     paddingTop = 6.dp,
                     paddingBottom = 6.dp,
-                    borderColor = Color.Black,
+                    borderColor = MaterialTheme.colorScheme.onSurface,
                     borderWidth = 1.dp, // Grosor del borde
                     modifier = Modifier
                         .weight(1f)
@@ -229,14 +242,14 @@ fun RegularFalsi(
                 ) {
                     CurvedBorderText(
                         text = "$iter",
-                        textColor = Color.Black,
+                        textColor = MaterialTheme.colorScheme.onSurface,
                         backgroundColor = colorResource(id = R.color.grisunicauca),
                         fontSize = 10.sp,
                         paddingStart = 6.dp,
                         paddingEnd = 6.dp,
                         paddingTop = 6.dp,
                         paddingBottom = 6.dp,
-                        borderColor = Color.Black,
+                        borderColor = MaterialTheme.colorScheme.onSurface,
                         borderWidth = 1.dp,
                         modifier = Modifier
                             .weight(0.3f)
@@ -249,14 +262,14 @@ fun RegularFalsi(
                     ) {
                         CurvedBorderText(
                             text = formatNumber(currentXl),
-                            textColor = Color.Black,
+                            textColor = MaterialTheme.colorScheme.onSurface,
                             backgroundColor = colorResource(id = R.color.grisunicauca),
                             fontSize = 10.sp,
                             paddingStart = 12.dp,
                             paddingEnd = 12.dp,
                             paddingTop = 6.dp,
                             paddingBottom = 6.dp,
-                            borderColor = Color.Black,
+                            borderColor = MaterialTheme.colorScheme.onSurface,
                             borderWidth = 1.dp,
                             modifier = Modifier.wrapContentSize(Alignment.Center)
                         )
@@ -268,14 +281,14 @@ fun RegularFalsi(
                     ) {
                         CurvedBorderText(
                             text = formatNumber(currentXu),
-                            textColor = Color.Black,
+                            textColor = MaterialTheme.colorScheme.onSurface,
                             backgroundColor = colorResource(id = R.color.grisunicauca),
                             fontSize = 10.sp,
                             paddingStart = 12.dp,
                             paddingEnd = 12.dp,
                             paddingTop = 6.dp,
                             paddingBottom = 6.dp,
-                            borderColor = Color.Black,
+                            borderColor = MaterialTheme.colorScheme.onSurface,
                             borderWidth = 1.dp,
                             modifier = Modifier.wrapContentSize(Alignment.Center)
                         )
@@ -287,14 +300,14 @@ fun RegularFalsi(
                     ) {
                         CurvedBorderText(
                             text = formatNumber(currentXr),
-                            textColor = Color.Black, // Color del texto personalizado
+                            textColor = MaterialTheme.colorScheme.onSurface, // Color del texto personalizado
                             backgroundColor = colorResource(id = R.color.grisunicauca),
                             fontSize = 10.sp,
                             paddingStart = 12.dp,
                             paddingEnd = 12.dp,
                             paddingTop = 6.dp,
                             paddingBottom = 6.dp,
-                            borderColor = Color.Black,
+                            borderColor = MaterialTheme.colorScheme.onSurface,
                             borderWidth = 1.dp,
                             modifier = Modifier.wrapContentSize(Alignment.Center)
                         )
@@ -306,14 +319,14 @@ fun RegularFalsi(
                     ) {
                         CurvedBorderText(
                             text = formatNumber(ea),
-                            textColor = Color.Black, // Color del texto personalizado
+                            textColor = MaterialTheme.colorScheme.onSurface, // Color del texto personalizado
                             backgroundColor = colorResource(id = R.color.grisunicauca),
                             fontSize = 10.sp,
                             paddingStart = 12.dp,
                             paddingEnd = 12.dp,
                             paddingTop = 6.dp,
                             paddingBottom = 6.dp,
-                            borderColor = Color.Black,
+                            borderColor = MaterialTheme.colorScheme.onSurface,
                             borderWidth = 1.dp,
                             modifier = Modifier.wrapContentSize(Alignment.Center)
                         )
@@ -353,11 +366,28 @@ fun RegularFalsi(
                         "La raíz de la función $f es: ${formatNumber(currentXr)} después de $iter iteraciones",
                         Toast.LENGTH_LONG
                     ).show()
-                    return
+                    break
                 }
 
             }
 
+            LaunchedEffect(f, a, b, MaxIter, epsilon) {
+                calculationEventId = logCalculationEvent(
+                    CalculationEventSubmission(
+                        deviceId = DeviceIdentity.getOrCreateDeviceId(context),
+                        method = "falsi",
+                        functionExpr = f,
+                        params = CalculationParams(a = a, b = b, tolerance = epsilon, maxIterations = MaxIter),
+                        rootValue = currentXr,
+                        iterations = iter,
+                        localeCountry = DeviceIdentity.localeCountry(),
+                        timezone = DeviceIdentity.timezoneId(),
+                        appVersion = BuildConfig.VERSION_NAME
+                    )
+                )
+            }
+
+            ResultFeedback(calculationEventId)
         }
     }
 }

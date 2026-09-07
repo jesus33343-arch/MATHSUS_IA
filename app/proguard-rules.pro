@@ -19,3 +19,12 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Ktor/OkHttp (transitivos del SDK de InsForge) referencian clases opcionales
+# de SLF4J y otros logging backends que no están presentes en runtime; SLF4J
+# ya maneja su ausencia con try/catch en tiempo de ejecución.
+-dontwarn org.slf4j.**
+-dontwarn okhttp3.internal.platform.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**

@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -82,7 +81,7 @@ fun ExerFalsi() {
         verticalArrangement = Arrangement.Top
     ) {
         Text(
-            text = "1. Usando el método de falsa posición, determine el punto de intersección de las curvas dadas por y = x^3 – 2x + 1 y y = x^2",
+            text = "1. Usando el método de Falsa Posición, determine el punto de intersección de las curvas dadas por y = x^3 – 2x + 1 y y = x^2",
             textAlign = TextAlign.Justify
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -91,7 +90,7 @@ fun ExerFalsi() {
             Text(
                 text = "2 ",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF000080)
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = "Determine las raíces reales de f(x) = -0.5x² + 2.5x + 4.5:",
@@ -110,7 +109,7 @@ fun ExerFalsi() {
                 fontStyle = FontStyle.Italic
             )
             Text(
-                text = "c) Usando el método de bisección con tres iteraciones para determinar la raíz más grande. " +
+                text = "c) Usando el método de Bisección con tres iteraciones para determinar la raíz más grande. " +
                         "Emplee como valores iniciales a = 5 y b = 10. " +
                         "Calcule el error estimado εₐ y el error verdadero εₜ para cada iteración.",
                 style = MaterialTheme.typography.bodyLarge,
@@ -122,7 +121,7 @@ fun ExerFalsi() {
             Text(
                 text = "3 ",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF000080)
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = "Determine las raíces reales de f(x) = -25182x - 90x² + 44x³ - 8x⁴ + 0.7x⁵:",
@@ -136,13 +135,13 @@ fun ExerFalsi() {
                 fontStyle = FontStyle.Italic
             )
             Text(
-                text = "b) Usando el método de bisección para localizar la raíz más grande con εₛ = 10%. " +
+                text = "b) Usando el método de Bisección para localizar la raíz más grande con εₛ = 10%. " +
                         "Utilice como valores iniciales a = 0.5 y b = 1.0.",
                 style = MaterialTheme.typography.bodyLarge,
                 fontStyle = FontStyle.Italic
             )
             Text(
-                text = "c) Realice el mismo cálculo que en b), pero con el método de la falsa posición y εₛ = 0.2%.",
+                text = "c) Realice el mismo cálculo que en b), pero con el método de la Falsa Posición y εₛ = 0.2%.",
                 style = MaterialTheme.typography.bodyLarge,
                 fontStyle = FontStyle.Italic
             )
@@ -152,11 +151,11 @@ fun ExerFalsi() {
             Text(
                 text = "4 ",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF000080)
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = "Localice la primera raíz no trivial de sen(x) = x², donde x está en radianes. " +
-                        "Use una técnica gráfica y bisección con un intervalo inicial de 0.5 a 1. " +
+                        "Use una técnica gráfica y Bisección con un intervalo inicial de 0.5 a 1. " +
                         "Haga el cálculo hasta que εₐ sea menor que εₛ = 2%. " +
                         "Realice también una prueba de error sustituyendo la respuesta final en la ecuación original.",
                 style = MaterialTheme.typography.bodyLarge
@@ -168,7 +167,7 @@ fun ExerFalsi() {
             Text(
                 text = "5 ",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF000080)
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = "Determine la raíz real de ln(x²) = 0.7:",
@@ -180,12 +179,12 @@ fun ExerFalsi() {
                 fontStyle = FontStyle.Italic
             )
             Text(
-                text = "b) Empleando tres iteraciones en el método de bisección con los valores iniciales a = 0.5 y b = 2.",
+                text = "b) Empleando tres iteraciones en el método de Bisección con los valores iniciales a = 0.5 y b = 2.",
                 style = MaterialTheme.typography.bodyLarge,
                 fontStyle = FontStyle.Italic
             )
             Text(
-                text = "c) Usando tres iteraciones del método de la falsa posición, con los mismos valores iniciales de b).",
+                text = "c) Usando tres iteraciones del método de la Falsa Posición, con los mismos valores iniciales de b).",
                 style = MaterialTheme.typography.bodyLarge,
                 fontStyle = FontStyle.Italic
             )
@@ -196,7 +195,7 @@ fun ExerFalsi() {
             Text(
                 text = "6 ",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF000080)
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = "Determine la raíz real de f(x) = (0.8 - 0.3x)/x:",
@@ -213,7 +212,7 @@ fun ExerFalsi() {
                 fontStyle = FontStyle.Italic
             )
             Text(
-                text = "c) Empleando tres iteraciones en el método de la falsa posición, con valores iniciales de 1 a 3. " +
+                text = "c) Empleando tres iteraciones en el método de la Falsa Posición, con valores iniciales de 1 a 3. " +
                         "Calcule el error aproximado εₐ y el error verdadero εₜ en cada iteración.",
                 style = MaterialTheme.typography.bodyLarge,
                 fontStyle = FontStyle.Italic
@@ -225,10 +224,10 @@ fun ExerFalsi() {
             Text(
                 text = "7 ",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF000080)
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = "Calcule la raíz cuadrada positiva de 18 usando el método de la falsa posición con εₛ = 0.5%. " +
+                text = "Calcule la raíz cuadrada positiva de 18 usando el método de la Falsa Posición con εₛ = 0.5%. " +
                         "Emplee como valores iniciales a = 4 y b = 5.",
                 style = MaterialTheme.typography.bodyLarge
             )
@@ -239,10 +238,10 @@ fun ExerFalsi() {
             Text(
                 text = "8 ",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF000080)
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = "Encuentre la raíz positiva más pequeña de la función (x está en radianes) x²|cos x| = 5 usando el método de la falsa posición. " +
+                text = "Encuentre la raíz positiva más pequeña de la función (x está en radianes) x²|cos x| = 5 usando el método de la Falsa Posición. " +
                         "Para localizar el intervalo en donde se encuentra la raíz, grafique primero esta función para valores de x entre 0 y 5. " +
                         "Realice el cálculo hasta que εₐ sea menor que εₛ = 1%. Compruebe su respuesta final sustituyéndola en la función original.",
                 style = MaterialTheme.typography.bodyLarge
@@ -254,10 +253,10 @@ fun ExerFalsi() {
             Text(
                 text = "9 ",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF000080)
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = "Encuentre la raíz positiva de f(x) = x⁴ - 8x³ - 35x² + 450x - 1001, utilizando el método de la falsa posición. " +
+                text = "Encuentre la raíz positiva de f(x) = x⁴ - 8x³ - 35x² + 450x - 1001, utilizando el método de la Falsa Posición. " +
                         "Tome como valores iniciales a = 4.5 y b = 9, y ejecute cinco iteraciones. " +
                         "Calcule los errores tanto aproximado como verdadero, con base en el hecho de que la raíz es 5.60979. " +
                         "Emplee una gráfica para explicar sus resultados y hacer el cálculo dentro de un εₛ = 1.0%.",
@@ -270,7 +269,7 @@ fun ExerFalsi() {
             Text(
                 text = "10 ",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF000080)
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = "Determine la raíz real de x³.⁵ = 80:",
@@ -282,7 +281,7 @@ fun ExerFalsi() {
                 fontStyle = FontStyle.Italic
             )
             Text(
-                text = "b) Con el método de la falsa posición dentro de εₛ = 2.5%. " +
+                text = "b) Con el método de la Falsa Posición dentro de εₛ = 2.5%. " +
                         "Haga elecciones iniciales de 2.0 a 5.0.",
                 style = MaterialTheme.typography.bodyLarge,
                 fontStyle = FontStyle.Italic

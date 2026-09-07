@@ -69,7 +69,7 @@ fun SecanteScreen(navController: NavHostController) {
         }
     ) {
         Scaffold(
-            topBar = { TopBar("Método de la secante", scope, drawerState) },
+            topBar = { TopBar("Método de la Secante", scope, drawerState) },
             content = { padding ->
                 Box(modifier = Modifier.fillMaxSize()) {
                     Image(
@@ -198,7 +198,7 @@ fun UsoSecante() {
             text = "Función bien formada",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = colorResource(id = R.color.rojounicauca),
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
         )
@@ -229,7 +229,7 @@ fun UsoSecante1() {
             text = "Uso paréntesis",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = colorResource(id = R.color.rojounicauca),
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
         )
@@ -260,7 +260,7 @@ fun UsoSecante2() {
             text = "Funciones en inglés",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = colorResource(id = R.color.rojounicauca),
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
         )
@@ -291,7 +291,7 @@ fun UsoSecante3() {
             text = "Constantes predefinidas ",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = colorResource(id = R.color.rojounicauca),
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
         )
@@ -322,7 +322,7 @@ fun UsoSecante4() {
             text = "Recuerda",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = colorResource(id = R.color.rojounicauca),
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
         )

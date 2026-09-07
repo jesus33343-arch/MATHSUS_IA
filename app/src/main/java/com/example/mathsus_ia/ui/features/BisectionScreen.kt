@@ -61,7 +61,7 @@ fun BisectionScreen(navController: NavHostController) {
         }
     ) {
         Scaffold(
-            topBar = { TopBar("Método de bisección", scope, drawerState) },
+            topBar = { TopBar("Método de Bisección", scope, drawerState) },
             content = { padding ->
                 Box(modifier = Modifier.fillMaxSize()) {
                     Image(
@@ -180,7 +180,7 @@ Column {
         HomeHeader(
             "Método de la bisección",
             "Este método requiere un intervalo [a,b] donde la función sea continua y exista un cambio de signo.\n" +
-                    "Las expresiones que puede usar son: sen(x), cos(x), tan(x), cot(x), sec(x), csc(x), log(x), ln(x), x^,e, pi, sqrt(x) y composición de estas teniendo en cuenta el uso correcto de los paréntesis con puntuacion en decimales en vez de comas."
+                    "Las expresiones que puede usar son: sin(x), cos(x), tan(x), cot(x), sec(x), csc(x), log(x), ln(x), x^,e, pi, sqrt(x) y composición de estas teniendo en cuenta el uso correcto de los paréntesis con puntuacion en decimales en vez de comas."
         )
         Button(
             onClick = {

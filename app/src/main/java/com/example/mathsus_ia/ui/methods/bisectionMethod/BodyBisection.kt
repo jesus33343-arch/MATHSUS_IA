@@ -59,7 +59,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mathsus.ui.features.nav_menu_bisection.ResultadoBisection
 import com.example.mathsus.ui.features.nav_menu_secante.ResultadoSecante
 import com.example.mathsus_ia.ui.methods.secanteMethod.CurvedBorderText
 import com.example.mathsus_ia.ui.methods.secanteMethod.evaluarFuncion
@@ -638,7 +637,7 @@ fun PasoBodyBisection() {
                                 // Resultado final destacado
                                 Card(
                                     colors = CardDefaults.cardColors(
-                                        containerColor = if (resultado.errorRelativo < tol.value.toDoubleOrNull() ?: 0.01)
+                                        containerColor = if (resultado.errorRelativo * 100 < (tol.value.toDoubleOrNull() ?: 0.01))
                                             colorScheme.primaryContainer
                                         else
                                             colorScheme.errorContainer
@@ -651,10 +650,10 @@ fun PasoBodyBisection() {
                                         horizontalArrangement = Arrangement.Center
                                     ) {
                                         Icon(
-                                            imageVector = if (resultado.errorRelativo < tol.value.toDoubleOrNull() ?: 0.01)
+                                            imageVector = if (resultado.errorRelativo * 100 < (tol.value.toDoubleOrNull() ?: 0.01))
                                                 Icons.Default.CheckCircle else Icons.Default.Info,
                                             contentDescription = null,
-                                            tint = if (resultado.errorRelativo < tol.value.toDoubleOrNull() ?: 0.01)
+                                            tint = if (resultado.errorRelativo * 100 < (tol.value.toDoubleOrNull() ?: 0.01))
                                                 colorScheme.onPrimaryContainer
                                             else
                                                 colorScheme.onErrorContainer,
@@ -663,7 +662,7 @@ fun PasoBodyBisection() {
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
                                             text = "Error = ${formatearValor(resultado.errorRelativo)} (${String.format("%.4f", resultado.errorRelativo * 100)}%)",
-                                            color = if (resultado.errorRelativo < tol.value.toDoubleOrNull() ?: 0.01)
+                                            color = if (resultado.errorRelativo * 100 < (tol.value.toDoubleOrNull() ?: 0.01))
                                                 colorScheme.onPrimaryContainer
                                             else
                                                 colorScheme.onErrorContainer,
@@ -678,18 +677,19 @@ fun PasoBodyBisection() {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Verificación de convergencia
+                    // Verificación de convergencia (tolerancia expresada en %, igual que en la pestaña "Método")
                     val toleranciaDouble = tol.value.toDoubleOrNull() ?: 0.01
-                    if (resultado.errorRelativo < toleranciaDouble || resultado.iteracion >= MaxIter.value.toIntOrNull() ?: 100) {
+                    val errorPorcentaje = resultado.errorRelativo * 100
+                    if (errorPorcentaje < toleranciaDouble || resultado.iteracion >= MaxIter.value.toIntOrNull() ?: 100) {
                         Text(
-                            text = "✅ Error ${formatearValor(resultado.errorRelativo)} < ${formatearValor(toleranciaDouble)}, convergencia alcanzada.",
+                            text = "✅ Error ${String.format("%.4f", errorPorcentaje)}% < ${formatearValor(toleranciaDouble)}%, convergencia alcanzada.",
                             color = colorScheme.primary,
                             textAlign = TextAlign.Justify,
                             fontWeight = FontWeight.Bold
                         )
                     } else {
                         Text(
-                            text = "⏭️ Error ${formatearValor(resultado.errorRelativo)} > ${formatearValor(toleranciaDouble)}, se continúa con la siguiente iteración.",
+                            text = "⏭️ Error ${String.format("%.4f", errorPorcentaje)}% > ${formatearValor(toleranciaDouble)}%, se continúa con la siguiente iteración.",
                             color = colorScheme.onBackground,
                             textAlign = TextAlign.Justify
                         )
@@ -819,12 +819,12 @@ fun PasoBodyBisection() {
 
                         currentIndex++
 
-                        // Verificar condiciones de parada
-                        if (errorRelativo < tolerancia || currentIndex >= maxIteraciones) {
+                        // Verificar condiciones de parada (tolerancia expresada en %, igual que en la pestaña "Método")
+                        if (errorRelativo * 100 < tolerancia || currentIndex >= maxIteraciones) {
                             shouldContinue = false
                             Toast.makeText(
                                 context,
-                                if (errorRelativo < tolerancia)
+                                if (errorRelativo * 100 < tolerancia)
                                     "¡Convergencia alcanzada!"
                                 else
                                     "Máximo de iteraciones alcanzado",
@@ -926,7 +926,7 @@ fun IteracionResultCardBisectionCorregida(
         ) {
             Text(
                 text = "Iteración ${resultado.iteracion}",
-                color = colorResource(id = R.color.rojounicauca),
+                color = colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
@@ -995,7 +995,7 @@ fun IteracionResultCardBisectionCorregida(
                         text = cFormatted,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
-                        color = colorResource(id = R.color.rojounicauca),
+                        color = colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -1058,7 +1058,7 @@ fun IteracionResultCardBisectionCorregida(
                         text = fcFormatted,
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center,
-                        color = colorResource(id = R.color.rojounicauca),
+                        color = colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -1089,7 +1089,7 @@ fun IteracionResultCardBisectionCorregida(
                         "El error es mayor que la tolerancia ($toleranciaFormatted). Se continúa el proceso.",
                     fontSize = 14.sp,
                     fontWeight = if (haConvergido) FontWeight.Bold else FontWeight.Normal,
-                    color = if (haConvergido) colorResource(id = R.color.rojounicauca) else colorScheme.onSurfaceVariant
+                    color = if (haConvergido) colorScheme.primary else colorScheme.onSurfaceVariant
                 )
             }
         }

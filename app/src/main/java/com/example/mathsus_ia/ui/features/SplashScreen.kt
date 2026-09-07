@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -27,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,8 +40,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import io.github.jesusgurrute.mathsus_ia.R
-import com.example.mathsus_ia.ui.theme.OverPassFontFamily
-
 
 @Composable
 fun SplashScreen(navController: NavController) {
@@ -60,16 +60,17 @@ fun SplashScreen(navController: NavController) {
         )
 
         // Definición de tamaños responsivos
-        val paddingValues = when {
-            isSmallScreen -> 6.dp
-            isMediumScreen -> 8.dp
-            else -> 12.dp
-        }
-        val cornerRadius = when {
-            isSmallScreen -> 8.dp
-            isMediumScreen -> 12.dp
+        val cardPadding = when {
+            isSmallScreen -> 12.dp
+            isMediumScreen -> 14.dp
             else -> 16.dp
         }
+        val cardSpacing = when {
+            isSmallScreen -> 12.dp
+            isMediumScreen -> 14.dp
+            else -> 16.dp
+        }
+        val cornerRadius = 20.dp
 
         Box(
             modifier = Modifier.fillMaxSize()
@@ -91,101 +92,79 @@ fun SplashScreen(navController: NavController) {
                 modifier = Modifier.fillMaxSize()
             )
 
-            Column (
+            Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.TopCenter)
-                    .padding(horizontal = paddingValues)
+                    .statusBarsPadding()
+                    .padding(horizontal = cardSpacing, vertical = 12.dp)
                     .background(
                         shape = RoundedCornerShape(cornerRadius),
-                        color = Color.White.copy(alpha = 0.9f)
+                        color = colorScheme.surface.copy(alpha = 0.95f)
                     )
-                    .padding(paddingValues)
+                    .padding(cardPadding)
             ) {
                 Button(
-                    onClick = {
-                        navController.navigate("baking")
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = colorScheme.primary),
-                    modifier = Modifier
-                        .padding(
-                            horizontal = when {
-                                isSmallScreen -> 6.dp
-                                isMediumScreen -> 7.dp
-                                else -> 8.dp
-                            },
-                            vertical = when {
-                                isSmallScreen -> 8.dp
-                                isMediumScreen -> 10.dp
-                                else -> 12.dp
-                            }
-                        )
-                        .fillMaxWidth()
+                    onClick = { navController.navigate("baking") },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorScheme.primary,
+                        contentColor = colorScheme.onPrimary
+                    ),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "Back",
-                        modifier = Modifier.size(
-                            when {
-                                isSmallScreen -> 18.dp
-                                isMediumScreen -> 20.dp
-                                else -> 24.dp
-                            }
-                        )
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
                     )
-                    Spacer(modifier = Modifier.width(when {
-                        isSmallScreen -> 2.dp
-                        isMediumScreen -> 3.dp
-                        else -> 4.dp
-                    }))
+                    Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "Preguntale a MATHSUS",
-                        fontSize = when {
-                            isSmallScreen -> 12.sp
-                            isMediumScreen -> 13.sp
-                            else -> 14.sp
-                        }
+                        text = "Pregúntale a MATHSUS",
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
-
             }
 
-            // Botones de navegación
-            Column (
+            // Botones de navegación a los 4 métodos
+            Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(cardSpacing),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.CenterStart)
-                    .padding(horizontal = paddingValues)
+                    .align(Alignment.Center)
+                    .offset(y = 48.dp)
+                    .padding(horizontal = cardSpacing)
                     .background(
                         shape = RoundedCornerShape(cornerRadius),
-                        color = Color.White.copy(alpha = 0.9f)
+                        color = colorScheme.surface.copy(alpha = 0.95f)
                     )
-                    .padding(paddingValues)
+                    .padding(cardPadding)
             ) {
                 listOf(
                     listOf(
-                        Triple("Bisección", "bisection", "Método\nBisec."),
+                        Triple("Bisección", "bisection", "Bisección"),
                         Triple("Newton", "newton", "Newton\nRaphson")
                     ),
                     listOf(
-                        Triple("Secante", "secante", "Método\nSec."),
+                        Triple("Secante", "secante", "Secante"),
                         Triple("Falsi", "falsi", "Regular\nFalsi")
                     )
                 ).forEach { rowButtons ->
                     Row(
-                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        horizontalArrangement = Arrangement.spacedBy(cardSpacing),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        rowButtons.forEach { (name, route, shortText) ->
+                        rowButtons.forEach { (_, route, shortText) ->
                             VerticalButton(
-                                text = if (isSmallScreen) shortText else "Método\n$name",
+                                text = shortText,
                                 fontSize = when {
-                                    isSmallScreen -> 10.sp
-                                    isMediumScreen -> 11.sp
-                                    else -> 12.sp
+                                    isSmallScreen -> 12.sp
+                                    isMediumScreen -> 13.sp
+                                    else -> 14.sp
                                 },
+                                modifier = Modifier.weight(1f),
                                 onClickAction = { navController.navigate(route) }
                             )
                         }
@@ -199,112 +178,63 @@ fun SplashScreen(navController: NavController) {
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
                     .navigationBarsPadding()
-                    .padding(paddingValues)
+                    .padding(horizontal = cardSpacing, vertical = 12.dp)
                     .background(
                         shape = RoundedCornerShape(cornerRadius),
-                        color = Color.White
+                        color = colorScheme.surface
                     )
-                    .padding(paddingValues)
+                    .padding(cardPadding),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
                     text = "MATHSUS",
-                    color = Color.Red,
-                    fontFamily = OverPassFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = when {
-                        isSmallScreen -> 24.sp
-                        isMediumScreen -> 28.sp
-                        else -> 32.sp
-                    },
-                    letterSpacing = when {
-                        isSmallScreen -> (-0.5).sp
-                        isMediumScreen -> (-0.75).sp
-                        else -> (-1).sp
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = when {
-                            isSmallScreen -> 12.dp
-                            isMediumScreen -> 14.dp
-                            else -> 16.dp
-                        }),
-                    textAlign = TextAlign.Justify
+                    color = colorScheme.primary,
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start
                 )
 
                 Text(
-                    text = "Esta calculadora resuelve el problema de la forma f(x) = 0, utilizando los métodos numéricos de la bisección, Newton - Raphson y el método de la secante.",
-                    fontFamily = OverPassFontFamily,
-                    fontWeight = FontWeight.Light,
-                    fontSize = when {
-                        isSmallScreen -> 14.sp
-                        isMediumScreen -> 16.sp
-                        else -> 18.sp
-                    },
-                    lineHeight = when {
-                        isSmallScreen -> 20.sp
-                        isMediumScreen -> 22.sp
-                        else -> 24.sp
-                    },
-                    letterSpacing = when {
-                        isSmallScreen -> 0.sp
-                        isMediumScreen -> (-0.05).sp
-                        else -> (-0.1).sp
-                    },
-                    color = Color.Black,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = when {
-                            isSmallScreen -> 12.dp
-                            isMediumScreen -> 14.dp
-                            else -> 16.dp
-                        }),
-                    textAlign = TextAlign.Justify
+                    text = "Esta calculadora resuelve el problema de la forma",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorScheme.onSurface,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start
+                )
+
+                Text(
+                    text = "f(x) = 0",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = colorScheme.primary,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+
+                Text(
+                    text = "utilizando el método de Bisección, método de Regular Falsi, método de Newton - Raphson y el método de la Secante.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorScheme.onSurface,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start
                 )
 
                 Button(
-                    onClick = {
-                        navController.navigate("info")
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = colorScheme.primary),
-                    modifier = Modifier
-                        .padding(
-                            horizontal = when {
-                                isSmallScreen -> 6.dp
-                                isMediumScreen -> 7.dp
-                                else -> 8.dp
-                            },
-                            vertical = when {
-                                isSmallScreen -> 8.dp
-                                isMediumScreen -> 10.dp
-                                else -> 12.dp
-                            }
-                        )
-                        .fillMaxWidth()
+                    onClick = { navController.navigate("info") },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorScheme.primary,
+                        contentColor = colorScheme.onPrimary
+                    ),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "Back",
-                        modifier = Modifier.size(
-                            when {
-                                isSmallScreen -> 18.dp
-                                isMediumScreen -> 20.dp
-                                else -> 24.dp
-                            }
-                        )
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
                     )
-                    Spacer(modifier = Modifier.width(when {
-                        isSmallScreen -> 2.dp
-                        isMediumScreen -> 3.dp
-                        else -> 4.dp
-                    }))
-                    Text(
-                        text = "Conoce más",
-                        fontSize = when {
-                            isSmallScreen -> 12.sp
-                            isMediumScreen -> 13.sp
-                            else -> 14.sp
-                        }
-                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(text = "Conoce más", style = MaterialTheme.typography.labelLarge)
                 }
             }
         }
@@ -315,19 +245,25 @@ fun SplashScreen(navController: NavController) {
 fun VerticalButton(
     text: String,
     fontSize: TextUnit,
-    onClickAction: () -> Unit
+    onClickAction: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val colorScheme = MaterialTheme.colorScheme
     Button(
         onClick = { onClickAction() },
-        colors = ButtonDefaults.buttonColors(containerColor = colorScheme.primary),
-        shape = RoundedCornerShape(8.dp)
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colorScheme.primary,
+            contentColor = colorScheme.onPrimary
+        ),
+        shape = RoundedCornerShape(14.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
+        modifier = modifier.height(64.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(text = text, fontSize = fontSize)
-            Spacer(modifier = Modifier.width(4.dp))
-        }
+        Text(
+            text = text,
+            fontSize = fontSize,
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center
+        )
     }
 }

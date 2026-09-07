@@ -78,32 +78,32 @@ fun ExerBisection() {
         verticalArrangement = Arrangement.Top
     ) {
         Text(
-            text = "1. Usando el método de bisección, determine el punto de intersección de las curvas dadas por y = x^3 – 2x + 1 y y = x^2",
+            text = "1. Usando el método de Bisección, determine el punto de intersección de las curvas dadas por y = x^3 – 2x + 1 y y = x^2",
             textAlign = TextAlign.Justify
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "2. Encuentre una raíz de la siguiente ecuación en el intervalo [0, 1] usando el método de bisección: 9x^4 + 18x^3 + 38x^2 – 57x + 14 = 0.",
+            text = "2. Encuentre una raíz de la siguiente ecuación en el intervalo [0, 1] usando el método de Bisección: 9x^4 + 18x^3 + 38x^2 – 57x + 14 = 0.",
             textAlign = TextAlign.Justify
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "3. Encuentre una raíz de la ecuación tan x = x en el intervalo [4, 5] usando el método de bisección. ¿Qué sucede en el intervalo [1, 2]?",
+            text = "3. Encuentre una raíz de la ecuación tan x = x en el intervalo [4, 5] usando el método de Bisección. ¿Qué sucede en el intervalo [1, 2]?",
             textAlign = TextAlign.Justify
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "4. Encuentre una raíz de la ecuación 6(e^x – x) = 6 + 3x^2 + 2x^3 entre –1 y +1 usando el método de bisección",
+            text = "4. Encuentre una raíz de la ecuación 6(e^x – x) = 6 + 3x^2 + 2x^3 entre –1 y +1 usando el método de Bisección",
             textAlign = TextAlign.Justify
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "5. Use el método de bisección para encontrar un cero de la ecuación λ cosh(50/λ) = λ + 10 con que empieza este capítulo.",
+            text = "5. Use el método de Bisección para encontrar un cero de la ecuación λ cosh(50/λ) = λ + 10 con que empieza este capítulo.",
             textAlign = TextAlign.Justify
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "6. Use el método de bisección para determinar raíces de estas funciones en los intervalos indicados.",
+            text = "6. Use el método de Bisección para determinar raíces de estas funciones en los intervalos indicados.",
             textAlign = TextAlign.Justify
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -121,7 +121,7 @@ fun ExerBisection() {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "7. Pruebe las tres rutinas de bisección en f (x) = x^3 + 2x^2 + 10x – 20, con a = 1 y b = 2. El cero es 1.36880 8108. Al programar esta función polinomial, use multiplicación anidada",
+            text = "7. Pruebe las tres rutinas de Bisección en f (x) = x^3 + 2x^2 + 10x – 20, con a = 1 y b = 2. El cero es 1.36880 8108. Al programar esta función polinomial, use multiplicación anidada",
             textAlign = TextAlign.Justify
         )
         Spacer(modifier = Modifier.height(16.dp))

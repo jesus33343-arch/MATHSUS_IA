@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -244,7 +243,7 @@ fun InfoNewton() {
 
         Text(
             text = "Ejemplo 1",
-            color = Color.Blue,
+            color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Justify
         )
 
@@ -259,7 +258,7 @@ fun InfoNewton() {
 
         Text(
             text = "Solución",
-            color = Color.Blue,
+            color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Justify
         )
 
@@ -281,7 +280,7 @@ fun InfoNewton() {
 
         Text(
             text = "Ilustración",
-            color = Color.Blue,
+            color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Justify
         )
 

@@ -53,7 +53,7 @@ fun PasoFalsi(navController: NavHostController) {
         }
     ) {
         Scaffold(
-            topBar = { TopBar("Regular falsi paso a paso", scope, drawerState) },
+            topBar = { TopBar("Regular Falsi paso a paso", scope, drawerState) },
             content = { padding ->
                 Column(
                     modifier = Modifier

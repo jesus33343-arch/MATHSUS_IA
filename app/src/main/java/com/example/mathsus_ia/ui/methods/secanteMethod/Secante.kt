@@ -22,11 +22,18 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import android.widget.Toast
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.mathsus_ia.data.CalculationEventSubmission
+import com.example.mathsus_ia.data.CalculationParams
+import com.example.mathsus_ia.data.DeviceIdentity
+import com.example.mathsus_ia.data.logCalculationEvent
+import com.example.mathsus_ia.ui.methods.ResultFeedback
+import io.github.jesusgurrute.mathsus_ia.BuildConfig
 import io.github.jesusgurrute.mathsus_ia.R
 import com.example.mathsus_ia.ui.methods.Metodo
 import org.mariuszgromada.math.mxparser.mathcollection.MathFunctions.abs
@@ -52,6 +59,10 @@ fun Secante(
     var rootFound by remember { mutableStateOf(false) }
     var rootValue by remember { mutableStateOf(0.0) }
     var totalIterations by remember { mutableStateOf(0) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var calculationEventId by remember { mutableStateOf<String?>(null) }
+
+    val context = LocalContext.current
 
     // Calcular fa y fb usando la función Metodo dentro del contexto @Composable
     val fa = Metodo(a = a, f = f)
@@ -62,6 +73,8 @@ fun Secante(
         // Limpiar resultados anteriores
         iterations.clear()
         rootFound = false
+        errorMessage = null
+        calculationEventId = null
 
         var k = 0
         var currentA = a
@@ -87,8 +100,16 @@ fun Secante(
                 break
             }
 
+            // Evitar división por cero cuando f(xk) == f(xk-1)
+            val denominator = currentFb - currentFa
+            if (abs(denominator) < 1e-12) {
+                errorMessage = "No se puede continuar: f(x${k}) y f(x${k - 1}) son iguales (división por cero)."
+                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                break
+            }
+
             // Método de la secante
-            d = (currentB - currentA) / (currentFb - currentFa)
+            d = (currentB - currentA) / denominator
             currentB = currentA
             currentFb = currentFa
             d *= currentFa
@@ -104,7 +125,13 @@ fun Secante(
             currentA -= d
             // No podemos llamar a Metodo aquí, así que calculamos una aproximación
             // Este es un punto crítico y limitante - ver comentario abajo
-            currentFa = evaluarFuncion(currentA, f)
+            val nextFa = evaluarFuncion(currentA, f)
+            if (nextFa.isNaN() || !currentA.isFinite()) {
+                errorMessage = "No se pudo evaluar f(x) = $f en x = $currentA."
+                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                break
+            }
+            currentFa = nextFa
             k++
 
             // Agregar el resultado de esta iteración
@@ -112,10 +139,27 @@ fun Secante(
         }
 
         totalIterations = k
+
+        if (rootFound) {
+            calculationEventId = logCalculationEvent(
+                CalculationEventSubmission(
+                    deviceId = DeviceIdentity.getOrCreateDeviceId(context),
+                    method = "secante",
+                    functionExpr = f,
+                    params = CalculationParams(x0 = a, x1 = b, tolerance = epsilon, maxIterations = maxIterations),
+                    rootValue = rootValue,
+                    iterations = k,
+                    localeCountry = DeviceIdentity.localeCountry(),
+                    timezone = DeviceIdentity.timezoneId(),
+                    appVersion = BuildConfig.VERSION_NAME
+                )
+            )
+        }
     }
 
     // Función para formatear números en notación científica
     fun formatScientific(value: Double): String {
+        if (!value.isFinite()) return "N/D"
         val formatted = String.format("%.4e", value)
         val parts = formatted.split("e")
         val coefficient = parts[0].toDouble()
@@ -174,26 +218,26 @@ fun Secante(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(
-                                color = colorResource(id = R.color.azulunicauca),
+                                color = MaterialTheme.colorScheme.primary,
                                 shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
                             )
                             .padding(8.dp)
                     ) {
                         Text(
                             text = "k",
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.weight(0.5f)
                         )
                         Text(
                             text = "xk",
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.weight(1f)
                         )
                         Text(
                             text = "f(xk)",
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.weight(1f)
                         )
@@ -232,6 +276,25 @@ fun Secante(
                 }
             }
 
+            // Mensaje de error, si lo hubo
+            errorMessage?.let { msg ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                ) {
+                    Text(
+                        text = msg,
+                        modifier = Modifier.padding(16.dp),
+                        color = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                }
+            }
+
             // Resultado final
             if (rootFound) {
                 Card(
@@ -239,7 +302,7 @@ fun Secante(
                         .fillMaxWidth()
                         .padding(top = 16.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = colorResource(id = R.color.azulunicauca).copy(alpha = 0.2f)
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
                     ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
@@ -254,6 +317,7 @@ fun Secante(
                         Text("Encontrado en $totalIterations iteraciones")
                     }
                 }
+                ResultFeedback(calculationEventId)
             }
         }
     }
@@ -273,94 +337,7 @@ fun evaluarFuncion(x: Double, expresion: String): Double {
         val expr = org.mariuszgromada.math.mxparser.Expression("f($x)", f)
         expr.calculate()
     } catch (e: Exception) {
-        // En caso de error, devolver un valor por defecto
-        0.0
-    }
-}
-
-// Versión simplificada para cálculos sin UI
-@SuppressLint("DefaultLocale")
-@Composable
-fun Secante_(
-    a: Double,
-    b: Double,
-    f: String,
-    epsilon: Double,
-    maxIterations: Int = 100
-) {
-    var rootFound by remember { mutableStateOf(false) }
-    var rootValue by remember { mutableStateOf(0.0) }
-    var iterations by remember { mutableStateOf(0) }
-
-    // Calcular fa y fb usando la función Metodo dentro del contexto @Composable
-    val initialFa = Metodo(a = a, f = f)
-    val initialFb = Metodo(a = b, f = f)
-
-    LaunchedEffect(a, b, f, epsilon) {
-        var k = 0
-        var currentA = a
-        var currentB = b
-        var currentFa = initialFa
-        var currentFb = initialFb
-        var d: Double
-
-        if (abs(currentFa) > abs(currentFb)) {
-            currentA = currentB.also { currentB = currentA }
-            currentFa = currentFb.also { currentFb = currentFa }
-        }
-
-        for (i in 1..maxIterations) {
-            if (abs(currentFa) < epsilon) {
-                rootFound = true
-                rootValue = currentA
-                iterations = k
-                break
-            }
-
-            d = (currentB - currentA) / (currentFb - currentFa)
-            currentB = currentA
-            currentFb = currentFa
-            d *= currentFa
-
-            if (abs(d) < epsilon) {
-                rootFound = true
-                rootValue = currentA
-                iterations = k
-                break
-            }
-
-            currentA -= d
-            // Usar la función no @Composable para evaluar
-            currentFa = evaluarFuncion(currentA, f)
-            k++
-        }
-
-        iterations = k
-    }
-
-    // Función para formatear números en notación científica
-    fun formatScientific(value: Double): String {
-        val formatted = String.format("%.4e", value)
-        val parts = formatted.split("e")
-        val coefficient = parts[0].toDouble()
-        val exponent = parts[1].toInt()
-
-        val coefficientStr = if (coefficient % 1 == 0.0) {
-            coefficient.toInt().toString()
-        } else {
-            parts[0].replace(Regex("0*$"), "")
-        }
-
-        return "$coefficientStr × 10^$exponent"
-    }
-
-    if (rootFound) {
-        Column {
-            Text("La función $f tiene raíz real en x = ${formatScientific(rootValue)}")
-            Text("Con error aproximado menor que $epsilon")
-            Text("Encontrado en $iterations iteraciones")
-        }
-    } else {
-        Text("No se encontró una raíz dentro de la tolerancia especificada después de $maxIterations iteraciones.")
+        // En caso de error, señalizar con NaN en vez de fingir f(x) = 0
+        Double.NaN
     }
 }

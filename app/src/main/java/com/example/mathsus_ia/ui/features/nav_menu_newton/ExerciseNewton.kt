@@ -176,14 +176,14 @@ fun ExerNewton() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "13. Encuentre el cero de la función f (x)= x – tan x que está más cerca de 99 (radianes) por el método de bisección y por el método de Newton. Sugerencia: se necesitan valores iniciales extremadamente exactos para esta función. Use la aplicación para construir una tabla de valores de f(x) alrededor de 99 para determinar la naturaleza de esta función.",
+            text = "13. Encuentre el cero de la función f (x)= x – tan x que está más cerca de 99 (radianes) por el método de Bisección y por el método de Newton. Sugerencia: se necesitan valores iniciales extremadamente exactos para esta función. Use la aplicación para construir una tabla de valores de f(x) alrededor de 99 para determinar la naturaleza de esta función.",
             textAlign = TextAlign.Justify
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "14. Usando el método de bisección, encuentre la raíz positiva de 2x(1 + x^2)^(–1) = arctan x. Usando la raíz como x₀, aplique el método de Newton para la función arctan x. Interprete los resultados.",
+            text = "14. Usando el método de Bisección, encuentre la raíz positiva de 2x(1 + x^2)^(–1) = arctan x. Usando la raíz como x₀, aplique el método de Newton para la función arctan x. Interprete los resultados.",
             textAlign = TextAlign.Justify
         )
 

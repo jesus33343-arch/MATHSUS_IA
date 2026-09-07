@@ -310,7 +310,7 @@ fun PasoBodyNewton() {
                 Column {
                     Text(
                         text = "Iteración: ${resultado.iteracion}",
-                        color = colorResource(id = R.color.rojounicauca),
+                        color = colorScheme.primary,
                         textAlign = TextAlign.Justify,
                         fontWeight = FontWeight.Bold
                     )
@@ -410,7 +410,7 @@ fun ResultHeaderCell(text: String) {
 fun ResultCell(text: String) {
     CurvedBorderText(
         text = text,
-        textColor = Color.Black,
+        textColor = colorScheme.onSurface,
         backgroundColor = colorResource(id = R.color.grisunicauca),
         fontSize = 14.sp,
         paddingStart = 12.dp,
@@ -459,7 +459,7 @@ fun calculateSymbolicDerivative(function: String): String {
             "${power}x^${power - 1}"
         }
         // Add more cases as needed
-        else -> "Derivative of $function" // Fallback for unsupported functions
+        else -> "f'(x) (calculada numéricamente)" // Fallback for unsupported functions
     }
 }
 // Esta función no es @Composable
@@ -496,14 +496,24 @@ fun CalculateButton(
             } else {
                 Toast.makeText(context, "Calculando x${currentIndex + 1}", Toast.LENGTH_SHORT).show()
 
-                val symbolicDerivative = calculateSymbolicDerivative(function)
-                val x = if (currentIndex == 0) x0.toDouble() else results.last().nextX
-                val result = newtonRaphsonCalculator(currentIndex, x, function, symbolicDerivative)
-                results.add(result)
-                onCurrentIndexChange(currentIndex + 1)
+                try {
+                    val symbolicDerivative = calculateSymbolicDerivative(function)
+                    val x = if (currentIndex == 0) x0.toDouble() else results.last().nextX
+                    val result = newtonRaphsonCalculator(currentIndex, x, function, symbolicDerivative)
+                    if (!result.nextX.isFinite() || !result.fx.isFinite()) {
+                        Toast.makeText(context, "El cálculo produjo un valor no finito, no se puede continuar", Toast.LENGTH_LONG).show()
+                        onShouldContinueChange(false)
+                        return@Button
+                    }
+                    results.add(result)
+                    onCurrentIndexChange(currentIndex + 1)
 
-                // Check if we should continue
-                onShouldContinueChange(currentIndex + 1 < 200 && abs(result.nextX - x) > error.toDouble())
+                    // Check if we should continue
+                    onShouldContinueChange(currentIndex + 1 < 200 && abs(result.nextX - x) > error.toDouble())
+                } catch (e: IllegalArgumentException) {
+                    Toast.makeText(context, e.message ?: "No se puede continuar", Toast.LENGTH_LONG).show()
+                    onShouldContinueChange(false)
+                }
             }
         },
         colors = ButtonDefaults.buttonColors(containerColor = colorScheme.primary),

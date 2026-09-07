@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -101,7 +100,7 @@ fun InfoSecante() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "En el método de la secante remplazamos f´(x_n) en la fórmula mediante una aproximación que se calcula fácilmente. Puesto que la derivada está definida por",
+            text = "En el método de la Secante remplazamos f´(x_n) en la fórmula mediante una aproximación que se calcula fácilmente. Puesto que la derivada está definida por",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
         )
@@ -156,7 +155,7 @@ fun InfoSecante() {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Cuando se usa esto en la primera ecuación, el resultado define el método de la secante:",
+            text = "Cuando se usa esto en la primera ecuación, el resultado define el método de la Secante:",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
         )
@@ -171,7 +170,7 @@ fun InfoSecante() {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "El método de la secante (parecido al de Newton) se puede usar para resolver también sistemas de ecuaciones.",
+            text = "El método de la Secante (parecido al de Newton) se puede usar para resolver también sistemas de ecuaciones.",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
         )
@@ -197,29 +196,29 @@ fun InfoSecante() {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "Al programar el método de la secante podríamos calcular y probar la cantidad f(x_n) – f(x_(n–1). Si está cerca de cero, puede suceder un sobreflujo en la ecuación cinco. Por supuesto, si el método tiene éxito los puntos x_n tenderán a un cero de f, por lo que f(x_n) convergerá a cero. (Estamos suponiendo que f es continua.) También, f(x_(n–1) convergerá a cero y, con más razón, f(x_n) – f(x_(n–1) tenderá a cero. Si los términos f(x_n) y f(x_(n-1) tienen el mismo signo, los dígitos significativos adicionales se eliminan en la resta. Por ello, podríamos quizá detener la iteración cuando |f(x_n) – f(x_(n–1)|≤ δ |f(x_n)| con cierta tolerancia específica δ, tal como 1x10^(–6)",
+            text = "Al programar el método de la Secante podríamos calcular y probar la cantidad f(x_n) – f(x_(n–1). Si está cerca de cero, puede suceder un sobreflujo en la ecuación cinco. Por supuesto, si el método tiene éxito los puntos x_n tenderán a un cero de f, por lo que f(x_n) convergerá a cero. (Estamos suponiendo que f es continua.) También, f(x_(n–1) convergerá a cero y, con más razón, f(x_n) – f(x_(n–1) tenderá a cero. Si los términos f(x_n) y f(x_(n-1) tienen el mismo signo, los dígitos significativos adicionales se eliminan en la resta. Por ello, podríamos quizá detener la iteración cuando |f(x_n) – f(x_(n–1)|≤ δ |f(x_n)| con cierta tolerancia específica δ, tal como 1x10^(–6)",
             textAlign = TextAlign.Justify
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "Ejemplo", color = Color.Blue,
+            text = "Ejemplo", color = colorScheme.primary,
             textAlign = TextAlign.Justify,
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Si el método de la secante se usa en p(x) = x^5 + x^3 + 3 con x₀ = –1 y x1 = –1, ¿a qué es igual x_8?",
+            text = "Si el método de la Secante se usa en p(x) = x^5 + x^3 + 3 con x₀ = –1 y x1 = 1, ¿a qué es igual x_8?",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "Solución", color = Color.Blue,
+            text = "Solución", color = colorScheme.primary,
             textAlign = TextAlign.Justify,
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "La salida de la aplicación usando el método de la secante es la siguiente",
+            text = "La salida de la aplicación usando el método de la Secante es la siguiente",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
         )
@@ -241,14 +240,14 @@ fun InfoSecante() {
         Text(
             text = "Resumen",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Blue,
+            color = colorScheme.primary,
             modifier = Modifier.padding(bottom = 16.dp),
             textAlign = TextAlign.Justify
         )
-        HorizontalDivider(thickness = 1.dp, color = Color.Blue)
+        HorizontalDivider(thickness = 1.dp, color = colorScheme.primary)
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "(1) El método de la secante para determinar un cero r de una función f(x) se escribe como)",
+            text = "(1) El método de la Secante para determinar un cero r de una función f(x) se escribe como)",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
         )
@@ -269,7 +268,7 @@ fun InfoSecante() {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "(2) Después de n + 1 pasos del método de la secante, el error de la iteración e_i = r – x_i obedece la ecuación",
+            text = "(2) Después de n + 1 pasos del método de la Secante, el error de la iteración e_i = r – x_i obedece la ecuación",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
             )
@@ -296,7 +295,7 @@ fun InfoSecante() {
             contentScale = ContentScale.Crop
         )
         Text(
-            text = "Por tanto, el método de la secante tiene un comportamiento de convergencia superlineal.",
+            text = "Por tanto, el método de la Secante tiene un comportamiento de convergencia superlineal.",
             textAlign = TextAlign.Justify,
             color = colorScheme.onBackground,
             )
