@@ -22,7 +22,8 @@ data class ChatMessage(
     val id: String = UUID.randomUUID().toString(),
     val role: ChatRole,
     val text: String,
-    val isError: Boolean = false
+    val isError: Boolean = false,
+    val aiQueryId: String? = null
 )
 
 /**
@@ -53,7 +54,7 @@ class BakingViewModel : ViewModel() {
                         buildList {
                             add(ChatMessage(role = ChatRole.USER, text = row.prompt))
                             if (!row.response.isNullOrBlank()) {
-                                add(ChatMessage(role = ChatRole.ASSISTANT, text = row.response))
+                                add(ChatMessage(role = ChatRole.ASSISTANT, text = row.response, aiQueryId = row.id))
                             }
                         }
                     }
@@ -74,10 +75,12 @@ class BakingViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             var responseText: String? = null
             var modelUsed: String? = null
+            val assistantMsgId = UUID.randomUUID().toString()
             try {
                 val result = askMathsusAi(prompt, history)
                 if (result.error != null || result.text.isNullOrBlank()) {
                     _messages.value = _messages.value + ChatMessage(
+                        id = assistantMsgId,
                         role = ChatRole.ASSISTANT,
                         text = result.error ?: "No se pudo obtener una respuesta. Intenta de nuevo.",
                         isError = true
@@ -85,10 +88,15 @@ class BakingViewModel : ViewModel() {
                 } else {
                     responseText = result.text
                     modelUsed = result.model
-                    _messages.value = _messages.value + ChatMessage(role = ChatRole.ASSISTANT, text = result.text)
+                    _messages.value = _messages.value + ChatMessage(
+                        id = assistantMsgId,
+                        role = ChatRole.ASSISTANT,
+                        text = result.text
+                    )
                 }
             } catch (e: Exception) {
                 _messages.value = _messages.value + ChatMessage(
+                    id = assistantMsgId,
                     role = ChatRole.ASSISTANT,
                     text = e.localizedMessage ?: "Error al conectar con el asistente de IA",
                     isError = true
@@ -97,7 +105,7 @@ class BakingViewModel : ViewModel() {
                 _isSending.value = false
                 // Registro best-effort: si falla, no afecta la respuesta ya mostrada al estudiante.
                 runCatching {
-                    logAiQuery(
+                    val queryId = logAiQuery(
                         AiQuerySubmission(
                             deviceId = deviceId,
                             modelName = modelUsed ?: "unknown",
@@ -108,6 +116,11 @@ class BakingViewModel : ViewModel() {
                             appVersion = BuildConfig.VERSION_NAME
                         )
                     )
+                    if (responseText != null) {
+                        _messages.value = _messages.value.map {
+                            if (it.id == assistantMsgId) it.copy(aiQueryId = queryId) else it
+                        }
+                    }
                 }
             }
         }

@@ -54,8 +54,10 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mathsus_ia.data.AiResponseReportSubmission
+import com.example.mathsus_ia.data.AiResponseSatisfactionSubmission
 import com.example.mathsus_ia.data.DeviceIdentity
 import com.example.mathsus_ia.data.submitAiResponseReport
+import com.example.mathsus_ia.data.submitAiResponseSatisfaction
 import io.github.jesusgurrute.mathsus_ia.BuildConfig
 import io.github.jesusgurrute.mathsus_ia.R
 import io.noties.markwon.Markwon
@@ -163,6 +165,23 @@ fun BakingScreen(
                     message = message,
                     markwon = markwon,
                     isReporting = reportingMessageId == message.id,
+                    onRate = if (message.aiQueryId != null && !message.isError) {
+                        { satisfied ->
+                            scope.launch {
+                                runCatching {
+                                    submitAiResponseSatisfaction(
+                                        AiResponseSatisfactionSubmission(
+                                            aiQueryId = message.aiQueryId,
+                                            deviceId = deviceId,
+                                            satisfied = satisfied
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        null
+                    },
                     onReport = if (relatedPrompt != null && !message.isError) {
                         {
                             reportingMessageId = message.id
@@ -253,9 +272,11 @@ private fun ChatBubble(
     message: ChatMessage,
     markwon: Markwon,
     isReporting: Boolean,
+    onRate: ((Boolean) -> Unit)?,
     onReport: (() -> Unit)?
 ) {
     val isUser = message.role == ChatRole.USER
+    var satisfaction by remember(message.id) { mutableStateOf<Boolean?>(null) }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -299,24 +320,56 @@ private fun ChatBubble(
                 }
             }
 
-            if (onReport != null) {
-                TextButton(
-                    onClick = onReport,
-                    enabled = !isReporting,
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
-                    modifier = Modifier.padding(top = 2.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Warning,
-                        contentDescription = null,
-                        modifier = Modifier.size(14.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = " Reportar",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+            if (onRate != null || onReport != null) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 2.dp)) {
+                    if (onRate != null) {
+                        TextButton(
+                            onClick = {
+                                satisfaction = true
+                                onRate(true)
+                            },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = if (satisfaction == true) "👍 ¡Gracias!" else "👍",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        TextButton(
+                            onClick = {
+                                satisfaction = false
+                                onRate(false)
+                            },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = "👎",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+
+                    if (onReport != null) {
+                        TextButton(
+                            onClick = onReport,
+                            enabled = !isReporting,
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Warning,
+                                contentDescription = null,
+                                modifier = Modifier.size(14.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = " Reportar",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 }
             }
         }

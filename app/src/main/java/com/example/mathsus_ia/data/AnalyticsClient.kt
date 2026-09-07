@@ -47,6 +47,7 @@ data class ExerciseCommentSubmission(
 
 @Serializable
 data class AiQuerySubmission(
+    val id: String = UUID.randomUUID().toString(),
     @SerialName("device_id") val deviceId: String,
     @SerialName("model_name") val modelName: String,
     val prompt: String,
@@ -55,6 +56,13 @@ data class AiQuerySubmission(
     @SerialName("locale_country") val localeCountry: String,
     val timezone: String,
     @SerialName("app_version") val appVersion: String? = null
+)
+
+@Serializable
+data class AiResponseSatisfactionSubmission(
+    @SerialName("ai_query_id") val aiQueryId: String,
+    @SerialName("device_id") val deviceId: String,
+    val satisfied: Boolean
 )
 
 @Serializable
@@ -94,11 +102,23 @@ suspend fun submitExerciseComment(submission: ExerciseCommentSubmission) {
         .execute<ExerciseCommentSubmission>()
 }
 
-suspend fun logAiQuery(submission: AiQuerySubmission) {
+/**
+ * Logs an AI chat turn and returns its id, so a thumbs up/down can reference
+ * this exact query without re-sending the prompt/response.
+ */
+suspend fun logAiQuery(submission: AiQuerySubmission): String {
     InsforgeClient.client.database
         .from("ai_queries")
         .insertTyped(listOf(submission))
         .execute<AiQuerySubmission>()
+    return submission.id
+}
+
+suspend fun submitAiResponseSatisfaction(submission: AiResponseSatisfactionSubmission) {
+    InsforgeClient.client.database
+        .from("ai_response_satisfaction")
+        .insertTyped(listOf(submission))
+        .execute<AiResponseSatisfactionSubmission>()
 }
 
 /**
