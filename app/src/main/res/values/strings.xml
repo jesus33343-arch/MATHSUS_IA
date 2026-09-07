@@ -2,7 +2,7 @@
     <string name="app_name">MATHSUS_IA</string>
     <string name="action_go">Preguntar</string>
     <string name="ia_title">MATHSUS con IA</string>
-    <string name="label_prompt">Escribe tu función o tu pregunta sobre bisección, regla falsa, Newton-Raphson o secante</string>
+    <string name="label_prompt">Escribe tu función o tu pregunta sobre bisección, Regular Falsi, Newton-Raphson o secante</string>
     <string name="prompt_placeholder"></string>
     <string name="results_placeholder">(La respuesta aparecerá aquí)</string>
 </resources>
