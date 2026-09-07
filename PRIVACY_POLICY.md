@@ -31,21 +31,24 @@ pantalla de Feedback) ni ningún otro dato que permita identificarte como person
 
 ## 2. Función de inteligencia artificial ("MATHSUS con IA")
 
-La app incluye una pantalla opcional de asistente con inteligencia artificial,
-que utiliza la API de Gemini de Google para responder preguntas relacionadas con
-los métodos numéricos que ofrece la app.
+La app incluye una pantalla opcional de asistente con inteligencia artificial
+("MATHSUS con IA"), con un modelo de la familia Gemini de Google, para responder
+preguntas relacionadas con los métodos numéricos que ofrece la app.
 
 Cuando usas esta función:
-- El texto que escribes se envía a los servidores de Google (Generative Language
-  API / Gemini) para generar una respuesta, de forma cifrada (HTTPS).
-- El procesamiento de esa información por parte de Google está sujeto a la
-  [Política de Privacidad de Google](https://policies.google.com/privacy) y a los
-  [Términos de la API de Gemini](https://ai.google.dev/gemini-api/terms). Como MATHSUS
-  usa el nivel gratuito de la API, Google puede utilizar el contenido de tus consultas
-  para mejorar sus modelos, conforme a esos términos.
-- Además, guardamos tu pregunta y la respuesta obtenida (junto con el identificador
-  anónimo de dispositivo descrito en la sección 1) para entender qué se pregunta con
-  más frecuencia y mejorar la función en próximas versiones.
+- El texto que escribes **no se envía directo a Google desde tu teléfono**: viaja
+  primero, de forma cifrada (HTTPS), a una función en nuestro backend (alojado en
+  InsForge), que a su vez la reenvía a Google a través de un proveedor intermediario
+  (OpenRouter) para generar la respuesta. Ninguna clave de acceso a la IA viaja dentro
+  de la app.
+- El procesamiento de esa información por parte de Google y de OpenRouter está sujeto
+  a la [Política de Privacidad de Google](https://policies.google.com/privacy), a los
+  [Términos de la API de Gemini](https://ai.google.dev/gemini-api/terms) y a la
+  [Política de Privacidad de OpenRouter](https://openrouter.ai/privacy).
+- Guardamos tu pregunta y la respuesta obtenida (junto con el identificador anónimo
+  de dispositivo descrito en la sección 1) para poder mostrarte tu propio historial
+  de conversación la próxima vez que abras esta pantalla, y para entender qué se
+  pregunta con más frecuencia y mejorar la función en próximas versiones.
 
 Si consideras que una respuesta generada por la IA es inapropiada, incorrecta o
 inadecuada, puedes usar el botón **"Reportar esta respuesta"** que aparece debajo de
@@ -78,10 +81,11 @@ resultado, comentas un ejercicio o usas la pantalla de IA/Feedback.
 
 No vendemos ni compartimos tu información con fines publicitarios. Los únicos
 terceros que reciben datos son:
-- **Google**, como proveedor del servicio de generación de texto (Gemini API) —
-  el texto que escribes en la pantalla de IA.
-- **InsForge**, como proveedor de la base de datos donde se guarda la analítica de
-  uso, tus reportes de IA y tu feedback.
+- **InsForge**, como proveedor de nuestro backend y base de datos, donde se guarda
+  la analítica de uso, tu historial de conversación con la IA, tus reportes y tu
+  feedback, y desde donde se reenvían tus preguntas de la pantalla de IA.
+- **OpenRouter** y **Google**, como proveedores del modelo de IA (Gemini) que
+  genera las respuestas — reciben el texto que escribes en la pantalla de IA.
 
 ## 7. Privacidad de menores
 
@@ -99,4 +103,4 @@ reflejará en este documento con una nueva fecha de "última actualización".
 
 Si tienes preguntas sobre esta política de privacidad, puedes escribir a:
 
-**jesusalirio@unicauca.edu.co**
+**jesus33343@gmail.com**

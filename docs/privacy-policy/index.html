@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Política de Privacidad — MATHSUS</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --blue: #2454B0;
+    --blue-dark: #6FA1FF;
+    --text: #1B1B1F;
+    --text-dim: #44464F;
+    --bg: #FFFFFF;
+    --card: #F4F6FB;
+    --border: #DDE2EE;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text: #E3E2E6;
+      --text-dim: #C4C6D0;
+      --bg: #121318;
+      --card: #1B1D24;
+      --border: #33353F;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 20px 80px;
+  }
+  header {
+    margin-bottom: 32px;
+  }
+  h1 {
+    font-size: 1.75rem;
+    margin: 0 0 8px;
+    color: var(--blue);
+  }
+  @media (prefers-color-scheme: dark) {
+    h1 { color: var(--blue-dark); }
+  }
+  .updated {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin: 0;
+  }
+  .intro {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 24px 0 8px;
+    font-size: 0.98rem;
+  }
+  h2 {
+    font-size: 1.15rem;
+    margin: 36px 0 12px;
+    color: var(--blue);
+  }
+  @media (prefers-color-scheme: dark) {
+    h2 { color: var(--blue-dark); }
+  }
+  p, li { font-size: 0.98rem; }
+  ul { padding-left: 1.3em; }
+  li { margin-bottom: 8px; }
+  a { color: var(--blue); }
+  @media (prefers-color-scheme: dark) {
+    a { color: var(--blue-dark); }
+  }
+  .contact {
+    display: inline-block;
+    margin-top: 4px;
+    font-weight: 600;
+    font-size: 1.05rem;
+  }
+  footer {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Política de Privacidad — MATHSUS</h1>
+    <p class="updated">Fecha de última actualización: 7 de septiembre de 2026</p>
+  </header>
+
+  <p class="intro">
+    Esta política de privacidad describe cómo la aplicación MATHSUS ("la app", "nosotros")
+    trata la información de sus usuarios. MATHSUS es una aplicación educativa desarrollada
+    por Jesús Alirio Gurrute Campo, estudiante del programa de Matemáticas de la
+    Universidad del Cauca, como proyecto de grado.
+  </p>
+
+  <h2>1. Qué datos recopila la app</h2>
+  <p>
+    MATHSUS <strong>no requiere registro ni inicio de sesión, ni recopila tu nombre, correo o
+    cualquier dato que te identifique directamente</strong>. La app no incluye anuncios ni
+    herramientas de rastreo de terceros (como Google Analytics, Facebook, etc.).
+  </p>
+  <p>
+    Para poder entender qué métodos numéricos se usan más y detectar fallas en las
+    respuestas, la app registra de forma anónima:
+  </p>
+  <ul>
+    <li>Un identificador aleatorio generado en tu dispositivo la primera vez que abres la
+      app (no es tu IMEI, número de teléfono ni ninguna otra identificación de
+      hardware — es un código que la propia app genera y que no revela quién eres).</li>
+    <li>Qué método numérico usaste (bisección, regla falsa, Newton-Raphson o secante),
+      la función y los valores que ingresaste, y el resultado obtenido.</li>
+    <li>Si marcaste el resultado como útil (👍) o no (👎), y el comentario que dejes si
+      consideras que un resultado está mal.</li>
+    <li>El país aproximado (según el idioma/región configurado en tu teléfono, no tu
+      ubicación real por GPS) y la zona horaria de tu dispositivo, para saber desde
+      dónde se usa más la app.</li>
+  </ul>
+  <p>
+    Esta información no incluye tu nombre, correo (salvo que tú decidas escribirlo en la
+    pantalla de Feedback) ni ningún otro dato que permita identificarte como persona.
+  </p>
+
+  <h2>2. Función de inteligencia artificial ("MATHSUS con IA")</h2>
+  <p>
+    La app incluye una pantalla opcional de asistente con inteligencia artificial
+    ("MATHSUS con IA"), con un modelo de la familia Gemini de Google, para responder
+    preguntas relacionadas con los métodos numéricos que ofrece la app.
+  </p>
+  <p>Cuando usas esta función:</p>
+  <ul>
+    <li>El texto que escribes <strong>no se envía directo a Google desde tu teléfono</strong>: viaja
+      primero, de forma cifrada (HTTPS), a una función en nuestro backend (alojado en
+      InsForge), que a su vez la reenvía a Google a través de un proveedor intermediario
+      (OpenRouter) para generar la respuesta. Ninguna clave de acceso a la IA viaja dentro
+      de la app.</li>
+    <li>El procesamiento de esa información por parte de Google y de OpenRouter está sujeto
+      a la <a href="https://policies.google.com/privacy">Política de Privacidad de Google</a>, a los
+      <a href="https://ai.google.dev/gemini-api/terms">Términos de la API de Gemini</a> y a la
+      <a href="https://openrouter.ai/privacy">Política de Privacidad de OpenRouter</a>.</li>
+    <li>Guardamos tu pregunta y la respuesta obtenida (junto con el identificador anónimo
+      de dispositivo descrito en la sección 1) para poder mostrarte tu propio historial
+      de conversación la próxima vez que abras esta pantalla, y para entender qué se
+      pregunta con más frecuencia y mejorar la función en próximas versiones.</li>
+  </ul>
+  <p>
+    Si consideras que una respuesta generada por la IA es inapropiada, incorrecta o
+    inadecuada, puedes usar el botón <strong>"Reportar esta respuesta"</strong> que aparece debajo de
+    cada respuesta para que el desarrollador la revise.
+  </p>
+
+  <h2>3. Feedback de usuarios</h2>
+  <p>
+    La app incluye una pantalla opcional de "Feedback" donde puedes calificarnos,
+    elegir una categoría y escribir comentarios para mejorar futuras versiones. Si
+    decides dejar tu correo electrónico de contacto, este se guarda junto con tu
+    comentario únicamente para que podamos responderte si es necesario; es opcional y
+    puedes omitirlo.
+  </p>
+
+  <h2>4. Dónde se guarda esta información</h2>
+  <p>
+    Todos los datos descritos arriba (uso de los métodos, preguntas a la IA, feedback y
+    reportes) se almacenan en una base de datos alojada en <strong>InsForge</strong>, a la que
+    únicamente el desarrollador tiene acceso administrativo. Ningún otro usuario de la
+    app puede ver los datos de otro.
+  </p>
+
+  <h2>5. Permisos que utiliza la app</h2>
+  <p>
+    La app solicita el permiso de <strong>Internet</strong>, necesario para comunicarse con la función
+    de IA y con la base de datos de uso/feedback descrita arriba.
+    El resto de la app (los cuatro métodos numéricos) funciona completamente sin
+    conexión; solo se envía información cuando terminas un cálculo, calificas un
+    resultado, comentas un ejercicio o usas la pantalla de IA/Feedback.
+  </p>
+
+  <h2>6. Compartición de datos con terceros</h2>
+  <p>No vendemos ni compartimos tu información con fines publicitarios. Los únicos
+    terceros que reciben datos son:</p>
+  <ul>
+    <li><strong>InsForge</strong>, como proveedor de nuestro backend y base de datos, donde se guarda
+      la analítica de uso, tu historial de conversación con la IA, tus reportes y tu
+      feedback, y desde donde se reenvían tus preguntas de la pantalla de IA.</li>
+    <li><strong>OpenRouter</strong> y <strong>Google</strong>, como proveedores del modelo de IA (Gemini) que
+      genera las respuestas — reciben el texto que escribes en la pantalla de IA.</li>
+  </ul>
+
+  <h2>7. Privacidad de menores</h2>
+  <p>
+    MATHSUS no está dirigida específicamente a niños y no recopila intencionalmente
+    información personal de menores de edad. Si eres padre, madre o tutor y crees que
+    un menor a tu cargo nos ha proporcionado información personal, contáctanos usando
+    los datos de la sección 9 para solicitar su eliminación.
+  </p>
+
+  <h2>8. Cambios a esta política</h2>
+  <p>
+    Podemos actualizar esta política de privacidad ocasionalmente. Cualquier cambio se
+    reflejará en este documento con una nueva fecha de "última actualización".
+  </p>
+
+  <h2>9. Contacto</h2>
+  <p>Si tienes preguntas sobre esta política de privacidad, puedes escribir a:</p>
+  <p class="contact">jesus33343@gmail.com</p>
+
+  <footer>
+    MATHSUS — proyecto de grado, Matemáticas, Universidad del Cauca.
+  </footer>
+</div>
+</body>
+</html>
