@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -182,8 +181,8 @@ fun BakingScreen(
                     } else {
                         null
                     },
-                    onReport = if (relatedPrompt != null && !message.isError) {
-                        {
+                    onReportComment = if (relatedPrompt != null && !message.isError) {
+                        { comment ->
                             reportingMessageId = message.id
                             scope.launch {
                                 try {
@@ -191,14 +190,15 @@ fun BakingScreen(
                                         AiResponseReportSubmission(
                                             prompt = relatedPrompt,
                                             response = message.text,
+                                            reason = comment.ifBlank { null },
                                             appVersion = BuildConfig.VERSION_NAME
                                         )
                                     )
-                                    Toast.makeText(context, "Gracias, reportamos esta respuesta", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(context, "Gracias, lo revisaremos", Toast.LENGTH_LONG).show()
                                 } catch (e: Exception) {
                                     Toast.makeText(
                                         context,
-                                        "No se pudo enviar el reporte: ${e.localizedMessage ?: "revisa tu conexión"}",
+                                        "No se pudo enviar el comentario: ${e.localizedMessage ?: "revisa tu conexión"}",
                                         Toast.LENGTH_LONG
                                     ).show()
                                 } finally {
@@ -273,10 +273,13 @@ private fun ChatBubble(
     markwon: Markwon,
     isReporting: Boolean,
     onRate: ((Boolean) -> Unit)?,
-    onReport: (() -> Unit)?
+    onReportComment: ((String) -> Unit)?
 ) {
     val isUser = message.role == ChatRole.USER
     var satisfaction by remember(message.id) { mutableStateOf<Boolean?>(null) }
+    var showCommentBox by remember(message.id) { mutableStateOf(false) }
+    var comment by remember(message.id) { mutableStateOf("") }
+    var commentSent by remember(message.id) { mutableStateOf(false) }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -320,56 +323,79 @@ private fun ChatBubble(
                 }
             }
 
-            if (onRate != null || onReport != null) {
+            if (onRate != null) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 2.dp)) {
-                    if (onRate != null) {
-                        TextButton(
-                            onClick = {
-                                satisfaction = true
-                                onRate(true)
-                            },
-                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
-                        ) {
-                            Text(
-                                text = if (satisfaction == true) "👍 ¡Gracias!" else "👍",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        TextButton(
-                            onClick = {
-                                satisfaction = false
-                                onRate(false)
-                            },
-                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
-                        ) {
-                            Text(
-                                text = "👎",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+                    TextButton(
+                        onClick = {
+                            satisfaction = true
+                            showCommentBox = false
+                            onRate(true)
+                        },
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = if (satisfaction == true) "👍 ¡Gracias!" else "👍",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
+                    TextButton(
+                        onClick = {
+                            satisfaction = false
+                            onRate(false)
+                            if (onReportComment != null && !commentSent) showCommentBox = true
+                        },
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = "👎",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
 
-                    if (onReport != null) {
-                        TextButton(
-                            onClick = onReport,
-                            enabled = !isReporting,
-                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Warning,
-                                contentDescription = null,
-                                modifier = Modifier.size(14.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Text(
-                                text = " Reportar",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+                if (showCommentBox && onReportComment != null && !commentSent) {
+                    Text(
+                        text = "¿En qué parte está el error? (un signo, una letra, un paso...)",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                    TextField(
+                        value = comment,
+                        onValueChange = { comment = it },
+                        placeholder = { Text("Cuéntanos qué está mal", style = MaterialTheme.typography.labelSmall) },
+                        textStyle = MaterialTheme.typography.bodySmall,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp)
+                    )
+                    TextButton(
+                        onClick = {
+                            onReportComment(comment.trim())
+                            commentSent = true
+                        },
+                        enabled = !isReporting,
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                    ) {
+                        Text(text = "Enviar", style = MaterialTheme.typography.labelSmall)
                     }
+                }
+
+                if (commentSent) {
+                    Text(
+                        text = "¡Gracias por el detalle, lo revisaremos!",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
                 }
             }
         }

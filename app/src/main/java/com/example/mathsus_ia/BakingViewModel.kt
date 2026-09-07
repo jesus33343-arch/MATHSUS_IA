@@ -18,6 +18,49 @@ import kotlinx.coroutines.launch
 
 enum class ChatRole { USER, ASSISTANT }
 
+/**
+ * Markwon's LaTeX plugin only recognizes "$$" as a delimiter, and it pairs
+ * whichever two "$$" occurrences come next in the text — if anything desyncs
+ * that pairing, everything between two unrelated "$$" gets typeset as one
+ * formula (e.g. Spanish prose rendered in italic math font).
+ *
+ * The actual cause (confirmed by inspecting raw stored responses): Gemini
+ * regularly splits its own opening "$$" across a line break — literally
+ * "$" + "\n" + "$[a, b]$$" instead of "$$[a, b]$$". That lone unmatched "$"
+ * before the newline is invisible to a "$$" scan, so pairing desyncs for
+ * every formula after it in the same message. Collapsing "$" + whitespace +
+ * "$" back into "$$" before pairing fixes this at the source. The stopword
+ * check and trailing-stray cleanup below are just a secondary safety net for
+ * whatever this doesn't catch.
+ */
+private val LATEX_PROSE_STOPWORDS = setOf(
+    "donde", "el", "la", "los", "las", "un", "una", "unos", "unas", "de", "del",
+    "y", "o", "que", "es", "son", "para", "por", "con", "sin", "sea", "esta",
+    "este", "estos", "estas", "cuando", "porque", "como", "muy", "mas", "más",
+    "tanto", "tal", "cada", "si", "no", "se", "su", "sus", "lo", "al", "en", "pero"
+)
+
+private fun sanitizeLatexDelimiters(markdown: String): String {
+    val normalized = markdown.replace(Regex("\\$\\s+\\$"), "\\$\\$")
+
+    val pairRegex = Regex("\\$\\$([\\s\\S]+?)\\$\\$")
+    var result = pairRegex.replace(normalized) { match ->
+        val content = match.groupValues[1]
+        val stopwordHits = content
+            .split(Regex("[\\s,;:]+"))
+            .count { word -> word.trim('.', ',', ':', ';').lowercase() in LATEX_PROSE_STOPWORDS }
+        if (stopwordHits >= 2) content else match.value
+    }
+    val remainingCount = Regex("\\$\\$").findAll(result).count()
+    if (remainingCount % 2 != 0) {
+        val lastIndex = result.lastIndexOf("$$")
+        if (lastIndex >= 0) {
+            result = result.removeRange(lastIndex, lastIndex + 2)
+        }
+    }
+    return result
+}
+
 data class ChatMessage(
     val id: String = UUID.randomUUID().toString(),
     val role: ChatRole,
@@ -54,7 +97,13 @@ class BakingViewModel : ViewModel() {
                         buildList {
                             add(ChatMessage(role = ChatRole.USER, text = row.prompt))
                             if (!row.response.isNullOrBlank()) {
-                                add(ChatMessage(role = ChatRole.ASSISTANT, text = row.response, aiQueryId = row.id))
+                                add(
+                                    ChatMessage(
+                                        role = ChatRole.ASSISTANT,
+                                        text = sanitizeLatexDelimiters(row.response),
+                                        aiQueryId = row.id
+                                    )
+                                )
                             }
                         }
                     }
@@ -91,7 +140,7 @@ class BakingViewModel : ViewModel() {
                     _messages.value = _messages.value + ChatMessage(
                         id = assistantMsgId,
                         role = ChatRole.ASSISTANT,
-                        text = result.text
+                        text = sanitizeLatexDelimiters(result.text)
                     )
                 }
             } catch (e: Exception) {

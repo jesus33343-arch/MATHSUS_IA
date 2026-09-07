@@ -10,7 +10,9 @@ const SYSTEM_CONTEXT =
   "queda como texto literal). Usa '$$...$$' tanto para una fórmula corta dentro de una frase (por ejemplo: la " +
   "derivada $$f'(x)$$ se evalúa en...) como para fórmulas o pasos importantes en su propia línea (por ejemplo: " +
   "$$x_{n+1} = x_n - \\frac{f(x_n)}{f'(x_n)}$$). No dejes ninguna fórmula, variable con subíndice/exponente, o " +
-  "símbolo matemático sin envolver en '$$'.";
+  "símbolo matemático sin envolver en '$$'. Los dos signos de '$$' deben quedar SIEMPRE juntos, sin ningún " +
+  "espacio ni salto de línea entre ellos, tanto al abrir como al cerrar (nunca escribas '$' seguido de un salto " +
+  "de línea y luego otro '$').";
 
 const DEFAULT_MODEL = "google/gemini-2.5-flash";
 const MAX_HISTORY_TURNS = 12;
