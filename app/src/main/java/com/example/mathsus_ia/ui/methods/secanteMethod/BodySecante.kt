@@ -41,6 +41,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,6 +65,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mathsus.ui.features.nav_menu_secante.ResultadoSecante
 import com.example.mathsus_ia.ui.methods.FunctionGraph
 import com.example.mathsus_ia.ui.methods.GraphViewModel
+import com.example.mathsus_ia.ui.methods.LatexText
+import com.example.mathsus_ia.ui.methods.functionExprToLatex
+import com.example.mathsus_ia.ui.methods.rememberMathMarkwon
 import org.mariuszgromada.math.mxparser.Function
 import kotlin.math.abs
 import java.text.DecimalFormat
@@ -79,12 +83,12 @@ fun BodySecante() {
     val showGraph = remember { mutableStateOf(false) }
     //val wallSecante = "https://kodular-community.s3.dualstack.eu-west-1.amazonaws.com/original/3X/c/e/ce82ada4d9e8591f01abefebfab0dba4a8228eee.png"
 
-    val f = remember { mutableStateOf("") }
-    val a = remember { mutableStateOf("") }
-    val b = remember { mutableStateOf("") }
-    val x2 = remember { mutableStateOf("") }
-    val MaxIter = remember { mutableStateOf("") }
-    val bandera = remember { mutableStateOf("") }
+    val f = rememberSaveable { mutableStateOf("") }
+    val a = rememberSaveable { mutableStateOf("") }
+    val b = rememberSaveable { mutableStateOf("") }
+    val x2 = rememberSaveable { mutableStateOf("") }
+    val MaxIter = rememberSaveable { mutableStateOf("") }
+    val bandera = rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -106,6 +110,18 @@ fun BodySecante() {
             shape = RoundedCornerShape(size = 8.dp),
             modifier = Modifier.fillMaxWidth()
         )
+        if (f.value.isNotBlank()) {
+            val markwon = rememberMathMarkwon()
+            LatexText(
+                latex = "\$\$f(x) = ${functionExprToLatex(f.value)}\$\$",
+                color = colorScheme.onBackground,
+                markwon = markwon,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 28.dp, max = 60.dp)
+                    .padding(top = 6.dp, start = 4.dp)
+            )
+        }
         Row {
             OutlinedTextField(
                 label = { Text(text = "a") },
@@ -195,7 +211,6 @@ fun BodySecante() {
                         Toast.makeText(context, "No deje datos vacios", Toast.LENGTH_SHORT).show()
                     } else {
                         bandera.value = a.value
-                        Toast.makeText(context, "Calculando", Toast.LENGTH_SHORT).show()
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = colorScheme.primary),

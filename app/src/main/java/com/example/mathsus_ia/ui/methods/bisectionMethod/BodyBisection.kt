@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -45,6 +46,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,6 +62,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mathsus.ui.features.nav_menu_secante.ResultadoSecante
+import com.example.mathsus_ia.ui.methods.LatexText
+import com.example.mathsus_ia.ui.methods.functionExprToLatex
+import com.example.mathsus_ia.ui.methods.rememberMathMarkwon
 import com.example.mathsus_ia.ui.methods.secanteMethod.CurvedBorderText
 import com.example.mathsus_ia.ui.methods.secanteMethod.evaluarFuncion
 import io.github.jesusgurrute.mathsus_ia.R
@@ -81,13 +86,13 @@ data class ResultadoBisectionCorregida(
 @Composable
 fun BodyBisection() {
     val colorScheme = MaterialTheme.colorScheme
-    val funcion = remember { mutableStateOf("") }
-    val a = remember { mutableStateOf("") }
-    val b = remember { mutableStateOf("") }
-    val MaxIter = remember { mutableStateOf("") }
-    val error = remember { mutableStateOf("") }
-    val bandera1 = remember { mutableStateOf("") }
-    val bandera2 = remember { mutableStateOf("") }
+    val funcion = rememberSaveable { mutableStateOf("") }
+    val a = rememberSaveable { mutableStateOf("") }
+    val b = rememberSaveable { mutableStateOf("") }
+    val MaxIter = rememberSaveable { mutableStateOf("") }
+    val error = rememberSaveable { mutableStateOf("") }
+    val bandera1 = rememberSaveable { mutableStateOf("") }
+    val bandera2 = rememberSaveable { mutableStateOf("") }
 
     val context = LocalContext.current
     val zoom = remember { mutableFloatStateOf(1f) }
@@ -111,6 +116,18 @@ fun BodyBisection() {
             shape = RoundedCornerShape(size = 8.dp),
             modifier = Modifier.fillMaxWidth()
         )
+        if (funcion.value.isNotBlank()) {
+            val markwon = rememberMathMarkwon()
+            LatexText(
+                latex = "\$\$f(x) = ${functionExprToLatex(funcion.value)}\$\$",
+                color = colorScheme.onBackground,
+                markwon = markwon,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 28.dp, max = 60.dp)
+                    .padding(top = 6.dp, start = 4.dp)
+            )
+        }
         Row {
             OutlinedTextField(
                 label = { Text(text = "a") },
@@ -205,8 +222,6 @@ fun BodyBisection() {
                             .show()
                     } else {
                         bandera1.value = a.value
-                        Toast.makeText(context, "Calculando", Toast.LENGTH_SHORT)
-                            .show()
                     }
                 }
             ) {

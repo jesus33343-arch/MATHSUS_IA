@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -140,7 +141,8 @@ fun DrawerItem(item: DestinosSecante, navController: NavHostController) {
 fun TopBar(
     title: String,
     scope: CoroutineScope,
-    drawerState: DrawerState
+    drawerState: DrawerState,
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
     TopAppBar(
         title = { Text(text = title) },
@@ -157,6 +159,7 @@ fun TopBar(
                 )
             }
         },
+        actions = actions,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = colorResource(id = R.color.azulunicauca), // Cambia el color de fondo a azul
             titleContentColor = Color.White, // Cambia el color del texto del título a blanco

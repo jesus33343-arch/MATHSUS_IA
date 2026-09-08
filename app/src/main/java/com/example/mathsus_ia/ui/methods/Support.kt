@@ -22,3 +22,9 @@ fun calcularFuncion(a: Double, f: String): Double {
     val expresion = org.mariuszgromada.math.mxparser.Expression("f($a)", funcion)
     return expresion.calculate()
 }
+
+// Equivalente no-@Composable de Derivada(...), para usarse dentro de funciones de cálculo
+// puro (no-Composable) como el bucle de Newton-Raphson.
+fun calcularDerivada(a: Double, f: String): Double {
+    return Expression("der($f, x, $a)").calculate()
+}
