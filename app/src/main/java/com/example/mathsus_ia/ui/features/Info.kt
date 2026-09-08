@@ -85,44 +85,63 @@ fun Info(
     )
 }
 
+private fun openInBrowserOrFallback(context: android.content.Context, url: String) {
+    val uri = android.net.Uri.parse(url)
+    // Se fuerza Chrome porque si hay una app nativa instalada que reclama ese
+    // dominio (App Links, como la app de PayPal), Android se la entrega directo
+    // a esa app en vez de mostrar la página web con todas las opciones de pago.
+    val chromeIntent = android.content.Intent(android.content.Intent.ACTION_VIEW, uri).apply {
+        setPackage("com.android.chrome")
+    }
+    try {
+        context.startActivity(chromeIntent)
+    } catch (e: android.content.ActivityNotFoundException) {
+        val fallbackIntent = android.content.Intent(android.content.Intent.ACTION_VIEW, uri)
+        context.startActivity(fallbackIntent)
+    }
+}
+
 @Composable
 private fun SupportBanner() {
     val donationContext = LocalContext.current
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = 12.dp)
+        Text(
+            text = "Apoya este proyecto",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = "MATHSUS es gratis. Tu aporte ayuda a mantenerlo.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = "Apoya este proyecto",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                text = "MATHSUS es gratis. Tu aporte ayuda a mantenerlo.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Button(
-            onClick = {
-                val intent = android.content.Intent(
-                    android.content.Intent.ACTION_VIEW,
-                    android.net.Uri.parse("https://paypal.me/jesusgurrute")
-                )
-                donationContext.startActivity(intent)
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    openInBrowserOrFallback(donationContext, "https://paypal.me/jesusgurrute")
+                }
+            ) {
+                Text(text = "PayPal")
             }
-        ) {
-            Text(text = "PayPal")
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    openInBrowserOrFallback(donationContext, "https://checkout.wompi.co/l/VPOS_nrvX1T")
+                }
+            ) {
+                Text(text = "PSE / Nequi")
+            }
         }
     }
 }
