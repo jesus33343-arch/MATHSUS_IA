@@ -23,15 +23,19 @@ object InsforgeClient {
 data class AiChatTurn(val role: String, val content: String)
 
 @Serializable
-data class AiChatRequest(val prompt: String, val history: List<AiChatTurn>)
+data class AiChatRequest(
+    val prompt: String,
+    val history: List<AiChatTurn>,
+    @SerialName("device_id") val deviceId: String? = null
+)
 
 @Serializable
 data class AiChatResponse(val text: String? = null, val model: String? = null, val error: String? = null)
 
-suspend fun askMathsusAi(prompt: String, history: List<AiChatTurn> = emptyList()): AiChatResponse {
+suspend fun askMathsusAi(prompt: String, history: List<AiChatTurn> = emptyList(), deviceId: String? = null): AiChatResponse {
     return InsforgeClient.client.functions.invoke<AiChatResponse>(
         slug = "mathsus-ai-chat",
-        body = AiChatRequest(prompt, history)
+        body = AiChatRequest(prompt, history, deviceId)
     )
 }
 

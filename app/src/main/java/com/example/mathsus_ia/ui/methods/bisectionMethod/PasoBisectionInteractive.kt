@@ -47,6 +47,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import com.example.mathsus_ia.ui.methods.secanteMethod.evaluarFuncion
 import com.example.mathsus_ia.ui.methods.secanteMethod.formatearValor
+import com.example.mathsus_ia.ui.methods.LatexText
+import com.example.mathsus_ia.ui.methods.rememberMathMarkwon
 import kotlin.math.abs
 import java.util.Locale
 import kotlinx.serialization.Serializable
@@ -73,10 +75,23 @@ private fun displayNumber(value: Double): String {
     return String.format(Locale.US, "%.6g", value)
 }
 
+private fun latexNumber(value: Double): String {
+    if (!value.isFinite()) return "\\text{N/D}"
+    if (value == 0.0) return "0"
+    val magnitude = abs(value)
+    if (magnitude >= 1e6 || magnitude < 1e-4) {
+        val scientific = String.format(Locale.US, "%.4e", value)
+        val parts = scientific.split("e")
+        return "${parts[0]}\\times 10^{${parts[1].toInt()}}"
+    }
+    return displayNumber(value)
+}
+
 @Composable
 fun PasoBodyBisectionInteractive(onAskAi: (String) -> Unit = {}) {
     val scheme = MaterialTheme.colorScheme
     val context = LocalContext.current
+    val mathMarkwon = rememberMathMarkwon()
     var function by rememberSaveable { mutableStateOf("") }
     var initialA by rememberSaveable { mutableStateOf("") }
     var initialB by rememberSaveable { mutableStateOf("") }
@@ -139,7 +154,7 @@ fun PasoBodyBisectionInteractive(onAskAi: (String) -> Unit = {}) {
             Spacer(Modifier.height(16.dp))
             Text("Progreso: ${steps.size} iteración${if (steps.size == 1) "" else "es"}", color = scheme.primary, fontWeight = FontWeight.Bold)
             steps.forEach { step ->
-                BisectionStepCard(step, function, scheme) { prompt -> onAskAi(prompt) }
+                BisectionStepCard(step, function, scheme, mathMarkwon) { prompt -> onAskAi(prompt) }
             }
         }
 
@@ -223,18 +238,25 @@ private fun NumericInput(label: String, value: String, onChange: (String) -> Uni
 }
 
 @Composable
-private fun BisectionStepCard(step: BisectionStep, function: String, scheme: androidx.compose.material3.ColorScheme, onAskAi: (String) -> Unit) {
+private fun BisectionStepCard(step: BisectionStep, function: String, scheme: androidx.compose.material3.ColorScheme, mathMarkwon: io.noties.markwon.Markwon, onAskAi: (String) -> Unit) {
     Card(Modifier.fillMaxWidth().padding(top = 8.dp), colors = CardDefaults.cardColors(containerColor = scheme.surfaceVariant), shape = RoundedCornerShape(16.dp)) {
         Column(Modifier.padding(16.dp)) {
             Text("Iteración ${step.iteration}", color = scheme.primary, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             Spacer(Modifier.height(8.dp))
             Text("Intervalo usado: [${displayNumber(step.a)}, ${displayNumber(step.b)}]", color = scheme.onSurfaceVariant)
-            FormulaLine("m${step.iteration} = (a + b) / 2 = ${displayNumber(step.midpoint)}", scheme)
+            FormulaLine("m_{${step.iteration}}=\\frac{a+b}{2}=${latexNumber(step.midpoint)}", scheme, mathMarkwon)
             ValueGrid(listOf("f(a)" to step.fa, "f(b)" to step.fb, "f(m)" to step.fm), scheme)
             Spacer(Modifier.height(8.dp))
             Text(if (step.fa * step.fm <= 0) "f(a) · f(m) ≤ 0 → la raíz queda en [a, m]." else "f(m) · f(b) < 0 → la raíz queda en [m, b].", color = scheme.onSurface, fontWeight = FontWeight.Medium)
             Text("Nuevo intervalo: [${displayNumber(step.nextA)}, ${displayNumber(step.nextB)}]", color = scheme.primary, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
+            Surface(color = scheme.surface, shape = RoundedCornerShape(10.dp), modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+                if (step.errorPercent == null) {
+                    LatexText("\$\$e_a\\text{ no aplica en la primera iteración}\$\$", scheme.onSurface, mathMarkwon, Modifier.fillMaxWidth().padding(10.dp), textSizeSp = 16f)
+                } else {
+                    LatexText("\$\$e_a=\\frac{|m_{${step.iteration}}-m_{${step.iteration - 1}}|}{|m_{${step.iteration}}|}\\times100\\%= ${latexNumber(step.errorPercent)}\\%\$\$", scheme.onSurface, mathMarkwon, Modifier.fillMaxWidth().padding(10.dp), textSizeSp = 16f)
+                }
+            }
             Text("Error aproximado: ${step.errorPercent?.let { displayNumber(it) + "%" } ?: "no aplica en la primera iteración"}", color = scheme.onSurfaceVariant, fontFamily = FontFamily.Monospace)
             step.stopReason?.let { Text(it, Modifier.padding(top = 8.dp), color = scheme.primary, fontWeight = FontWeight.Bold) }
             Spacer(Modifier.height(8.dp))
@@ -249,8 +271,10 @@ private fun BisectionStepCard(step: BisectionStep, function: String, scheme: and
 }
 
 @Composable
-private fun FormulaLine(text: String, scheme: androidx.compose.material3.ColorScheme) {
-    Surface(color = scheme.surface, shape = RoundedCornerShape(10.dp), modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)) { Text(text, Modifier.padding(12.dp).fillMaxWidth(), textAlign = TextAlign.Center, fontFamily = FontFamily.Monospace, color = scheme.onSurface) }
+private fun FormulaLine(latex: String, scheme: androidx.compose.material3.ColorScheme, markwon: io.noties.markwon.Markwon) {
+    Surface(color = scheme.surface, shape = RoundedCornerShape(10.dp), modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)) {
+        LatexText("$$$latex$$", scheme.onSurface, markwon, Modifier.fillMaxWidth().padding(12.dp), textSizeSp = 17f)
+    }
 }
 
 @Composable

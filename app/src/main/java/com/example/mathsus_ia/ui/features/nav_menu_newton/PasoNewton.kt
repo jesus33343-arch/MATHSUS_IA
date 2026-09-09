@@ -42,8 +42,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import android.net.Uri
 import com.example.mathsus.ui.features.nav_menu_secante.TopBar
-import com.example.mathsus.ui.methods.newtonMethod.PasoBodyNewton
+import com.example.mathsus.ui.methods.newtonMethod.PasoBodyNewtonInteractive
 import io.github.jesusgurrute.mathsus_ia.R
 
 @Composable
@@ -74,9 +75,12 @@ fun PasoNewton(navController: NavHostController) {
                         .padding(padding)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    PasoBodyNewton()                 }
+                    PasoBodyNewtonInteractive { prompt ->
+                        navController.navigate("baking?context=${Uri.encode(prompt)}")
+                    }
+                }
             },
-            bottomBar = { BottomNavBarNewton(navController = navController) }
+            bottomBar = { BottomNavBarNewtonUpdated(navController = navController) }
         )
     }
 }

@@ -43,7 +43,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.mathsus_ia.ui.methods.secanteMethod.PasoBodySecante
+import com.example.mathsus_ia.ui.methods.secanteMethod.PasoBodySecanteInteractive
+import android.net.Uri
 import io.github.jesusgurrute.mathsus_ia.R
 import com.example.mathsus_ia.ui.features.BottomNavBarSecante
 import kotlinx.coroutines.CoroutineScope
@@ -76,7 +77,9 @@ fun PasoSecante(navController: NavHostController) {
                         .padding(padding)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    PasoBodySecante()
+                    PasoBodySecanteInteractive { prompt ->
+                        navController.navigate("baking?context=${Uri.encode(prompt)}")
+                    }
                 }
             },
             bottomBar = { BottomNavBarSecante(navController = navController) }

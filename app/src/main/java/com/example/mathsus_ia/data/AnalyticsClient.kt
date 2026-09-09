@@ -68,7 +68,7 @@ data class AiResponseSatisfactionSubmission(
 @Serializable
 data class AiQueryRow(
     val id: String,
-    @SerialName("device_id") val deviceId: String,
+    @SerialName("device_id") val deviceId: String = "",
     @SerialName("model_name") val modelName: String? = null,
     val prompt: String,
     val response: String? = null,

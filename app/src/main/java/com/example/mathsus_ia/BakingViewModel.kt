@@ -126,7 +126,7 @@ class BakingViewModel : ViewModel() {
             var modelUsed: String? = null
             val assistantMsgId = UUID.randomUUID().toString()
             try {
-                val result = askMathsusAi(prompt, history)
+                val result = askMathsusAi(prompt, history, deviceId)
                 if (result.error != null || result.text.isNullOrBlank()) {
                     _messages.value = _messages.value + ChatMessage(
                         id = assistantMsgId,

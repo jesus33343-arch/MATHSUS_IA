@@ -29,8 +29,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import android.net.Uri
 import com.example.mathsus.ui.features.nav_menu_secante.TopBar
-import com.example.mathsus.ui.methods.falsiMethod.PasoBodyFalsi
+import com.example.mathsus.ui.methods.falsiMethod.PasoBodyFalsiInteractive
 import io.github.jesusgurrute.mathsus_ia.R
 import com.example.mathsus_ia.ui.features.BottomNavBarFalsi
 
@@ -61,7 +62,10 @@ fun PasoFalsi(navController: NavHostController) {
                         .padding(padding)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    PasoBodyFalsi()                 }
+                    PasoBodyFalsiInteractive { prompt ->
+                        navController.navigate("baking?context=${Uri.encode(prompt)}")
+                    }
+                }
             },
             bottomBar = { BottomNavBarFalsi(navController = navController) }
         )
