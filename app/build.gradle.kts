@@ -14,6 +14,21 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(keystorePropertiesFile.inputStream())
 }
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
+fun buildConfigString(value: String): String =
+    "\"${value.replace("\\", "\\\\").replace("\"", "\\\"")}\""
+
+val insforgeBaseUrl = localProperties.getProperty(
+    "insforgeBaseUrl",
+    "https://3vz3yjbt.us-east.insforge.app"
+)
+val insforgeAnonKey = localProperties.getProperty("insforgeAnonKey", "")
+
 android {
     namespace = "io.github.jesusgurrute.mathsus_ia"
     compileSdk = 35
@@ -63,6 +78,10 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+    buildTypes.configureEach {
+        buildConfigField("String", "insforgeBaseUrl", buildConfigString(insforgeBaseUrl))
+        buildConfigField("String", "insforgeAnonKey", buildConfigString(insforgeAnonKey))
     }
 }
 
