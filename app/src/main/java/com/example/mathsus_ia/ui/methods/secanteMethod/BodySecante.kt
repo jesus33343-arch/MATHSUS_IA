@@ -996,7 +996,9 @@ fun MathFormulaView(latex: String, modifier: Modifier = Modifier) {
 fun evaluarFuncion(a: String, f: String): Double {
     val f = Function("f", f, "x")
     val fa = org.mariuszgromada.math.mxparser.Expression("f(${a})", f).calculate()
-    val roundfa = String.format("%.4f", fa)
+    // El valor se vuelve a leer como Double en varios métodos. Debe usar
+    // punto decimal aunque el teléfono esté configurado para usar coma.
+    val roundfa = String.format(Locale.US, "%.4f", fa)
     return roundfa.toDouble()
 }
 

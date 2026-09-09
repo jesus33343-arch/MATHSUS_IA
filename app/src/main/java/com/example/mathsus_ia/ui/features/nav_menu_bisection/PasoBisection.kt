@@ -42,9 +42,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import android.net.Uri
 import io.github.jesusgurrute.mathsus_ia.R
 import com.example.mathsus.ui.features.nav_menu_secante.TopBar
-import com.example.mathsus.ui.methods.bisectionMethod.PasoBodyBisection
+import com.example.mathsus.ui.methods.bisectionMethod.PasoBodyBisectionInteractive
 
 @Composable
 fun PasoBisection(navController: NavHostController) {
@@ -73,10 +74,12 @@ fun PasoBisection(navController: NavHostController) {
                         .padding(padding)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    PasoBodyBisection()
+                    PasoBodyBisectionInteractive { prompt ->
+                        navController.navigate("baking?context=${Uri.encode(prompt)}")
+                    }
                 }
             },
-            bottomBar = { BottomNavBarBisection(navController = navController) }
+            bottomBar = { BottomNavBarBisectionUpdated(navController = navController) }
         )
     }
 }

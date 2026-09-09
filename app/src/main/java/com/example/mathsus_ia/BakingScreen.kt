@@ -67,6 +67,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun BakingScreen(
     navController: NavController,
+    initialPrompt: String = "",
     bakingViewModel: BakingViewModel = viewModel()
 ) {
     val context = LocalContext.current
@@ -74,7 +75,7 @@ fun BakingScreen(
     val deviceId = remember { DeviceIdentity.getOrCreateDeviceId(context) }
     val messages by bakingViewModel.messages.collectAsState()
     val isSending by bakingViewModel.isSending.collectAsState()
-    var prompt by rememberSaveable { mutableStateOf("") }
+    var prompt by rememberSaveable(initialPrompt) { mutableStateOf(initialPrompt) }
     var reportingMessageId by rememberSaveable { mutableStateOf<String?>(null) }
     val listState = rememberLazyListState()
 
@@ -109,7 +110,7 @@ fun BakingScreen(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
             IconButton(
-                onClick = { navController.navigate("splash") },
+                onClick = { navController.popBackStack() },
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(

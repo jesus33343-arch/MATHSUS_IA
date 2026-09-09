@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.mathsus.ui.features.nav_menu_bisection.ExerciseBisection
 import com.example.mathsus_ia.ui.features.nav_menu_bisection.InformationBisection
 import com.example.mathsus.ui.features.nav_menu_bisection.PasoBisection
@@ -70,7 +72,18 @@ class MainActivity : ComponentActivity() {
                         composable(route = "info") { Info(navController = navController) }
                         composable(route = "feedback") { FeedbackScreen(navController = navController) }
 
-                        composable(route = "baking") { BakingScreen(navController = navController) }
+                        composable(
+                            route = "baking?context={context}",
+                            arguments = listOf(navArgument("context") {
+                                type = NavType.StringType
+                                defaultValue = ""
+                            })
+                        ) { entry ->
+                            BakingScreen(
+                                navController = navController,
+                                initialPrompt = entry.arguments?.getString("context").orEmpty()
+                            )
+                        }
 
                     }
                     //BakingScreen()
