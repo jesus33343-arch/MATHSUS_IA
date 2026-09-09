@@ -43,7 +43,7 @@ import com.example.mathsus.ui.features.nav_menu_falsi.DrawerFalsi
 
 
 @Composable
-fun InformationFalsi(navController: NavHostController) {
+fun LegacyInformationFalsi(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navigationItems = listOf(
@@ -78,7 +78,7 @@ fun InformationFalsi(navController: NavHostController) {
                             .fillMaxWidth()
                             .verticalScroll(rememberScrollState())
                     ) {
-                        InfoFalsi()
+                        LegacyInfoFalsi()
                     }
                 }
             },
@@ -88,7 +88,7 @@ fun InformationFalsi(navController: NavHostController) {
 }
 
 @Composable
-fun InfoFalsi() {
+fun LegacyInfoFalsi() {
 
     Column(
         modifier = Modifier

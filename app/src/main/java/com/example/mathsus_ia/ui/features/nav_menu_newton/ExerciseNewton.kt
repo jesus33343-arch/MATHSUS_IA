@@ -30,7 +30,7 @@ import com.example.mathsus.ui.features.nav_menu_secante.TopBar
 import io.github.jesusgurrute.mathsus_ia.R
 
 @Composable
-fun ExerciseNewton(navController: NavHostController) {
+fun LegacyExerciseNewton(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navigationItems = listOf(
@@ -62,7 +62,7 @@ fun ExerciseNewton(navController: NavHostController) {
                             .fillMaxWidth()
                             .verticalScroll(rememberScrollState())
                     ) {
-                        ExerNewton()
+                        LegacyExerNewton()
                     }
 
                 }
@@ -73,7 +73,7 @@ fun ExerciseNewton(navController: NavHostController) {
 }
 
 @Composable
-fun ExerNewton() {
+fun LegacyExerNewton() {
     Column(
         modifier = Modifier
             .fillMaxSize()

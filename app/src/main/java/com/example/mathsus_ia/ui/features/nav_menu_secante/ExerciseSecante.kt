@@ -30,7 +30,7 @@ import io.github.jesusgurrute.mathsus_ia.R
 import com.example.mathsus_ia.ui.features.BottomNavBarSecante
 
 @Composable
-fun ExerciseSecante(navController: NavHostController) {
+fun LegacyExerciseSecante(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navigationItems = listOf(
@@ -62,7 +62,7 @@ fun ExerciseSecante(navController: NavHostController) {
                             .fillMaxWidth()
                             .verticalScroll(rememberScrollState())
                     ) {
-                        ExerSecante()
+                        LegacyExerSecante()
                     }
                 }
             },
@@ -72,7 +72,7 @@ fun ExerciseSecante(navController: NavHostController) {
     }
 }
 @Composable
-fun ExerSecante() {
+fun LegacyExerSecante() {
     val colorScheme = MaterialTheme.colorScheme
     Column(
         modifier = Modifier

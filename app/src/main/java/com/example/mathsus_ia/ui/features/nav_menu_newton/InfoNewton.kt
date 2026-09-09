@@ -27,7 +27,7 @@ import com.example.mathsus.ui.features.nav_menu_secante.TopBar
 import io.github.jesusgurrute.mathsus_ia.R
 
 @Composable
-fun InformationNewton(navController: NavHostController) {
+fun LegacyInformationNewton(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navigationItems = listOf(
@@ -60,7 +60,7 @@ fun InformationNewton(navController: NavHostController) {
                             .fillMaxWidth()
                             .verticalScroll(rememberScrollState())
                     ) {
-                        InfoNewton()
+                        LegacyInfoNewton()
                     }
                 }
             },
@@ -71,7 +71,7 @@ fun InformationNewton(navController: NavHostController) {
 }
 
 @Composable
-fun InfoNewton() {
+fun LegacyInfoNewton() {
 
     Column(
         modifier = Modifier

@@ -32,7 +32,7 @@ import io.github.jesusgurrute.mathsus_ia.R
 import com.example.mathsus.ui.features.nav_menu_secante.TopBar
 
 @Composable
-fun InformationBisection(navController: NavHostController) {
+fun LegacyInformationBisection(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navigationItems = listOf(
@@ -65,7 +65,7 @@ fun InformationBisection(navController: NavHostController) {
                             .fillMaxWidth()
                             .verticalScroll(rememberScrollState())
                     ) {
-                        InfoBisection()
+                        LegacyInfoBisection()
                     }
                 }
             },
@@ -76,7 +76,7 @@ fun InformationBisection(navController: NavHostController) {
 }
 
 @Composable
-fun InfoBisection() {
+fun LegacyInfoBisection() {
 
     Column(
         modifier = Modifier

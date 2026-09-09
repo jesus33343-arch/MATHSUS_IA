@@ -26,6 +26,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -228,28 +231,24 @@ private fun HelpCard(title: String, body: String) {
 
 @Composable
 fun BottomNavBarNewton(navController: NavController) {
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
     NavigationBar(
         modifier = Modifier.navigationBarsPadding(), // Añadir padding para evitar superposición con la barra de navegación
         containerColor = colorResource(id = R.color.azulunicauca),
         tonalElevation = 8.dp
     ) {
         NavigationBarItem(
-            icon = { Text("⌂", color = Color.White, fontSize = 22.sp) },
+            icon = { Icon(Icons.Default.Home, "Inicio", tint = Color.White) },
             label = { Text("Inicio", color = Color.White) },
-            selected = false, // Cambia esto según la navegación actual
+            selected = currentRoute == "splash",
             onClick = { navController.navigate("splash") }
         )
         NavigationBarItem(
             icon = {
-                Text(
-                    "ƒ",
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontStyle = FontStyle.Italic
-                )
+                Text("ƒ", color = Color.White, fontSize = 22.sp, fontStyle = FontStyle.Italic)
             },
             label = { Text("Método", color = Color.White) },
-            selected = false, // Cambia esto según la navegación actual
+            selected = currentRoute == "newton",
             onClick = { navController.navigate("newton") }
         )
         NavigationBarItem(
@@ -261,19 +260,19 @@ fun BottomNavBarNewton(navController: NavController) {
                 )
             },
             label = { Text("Paso paso", color = Color.White) },
-            selected = false,
+            selected = currentRoute == "pasoNewton",
             onClick = { navController.navigate("pasoNewton") }
         )
         NavigationBarItem(
-            icon = { Text("ⓘ", color = Color.White, fontSize = 20.sp) },
+            icon = { Icon(Icons.Default.Info, "Info", tint = Color.White) },
             label = { Text("Info", color = Color.White) },
-            selected = false,
+            selected = currentRoute == "infoNewton",
             onClick = { navController.navigate("infoNewton") }
         )
         NavigationBarItem(
-            icon = { Text("✎", color = Color.White, fontSize = 20.sp) },
+            icon = { Icon(Icons.Default.Edit, "Práctica", tint = Color.White) },
             label = { Text("Práctica", color = Color.White) },
-            selected = false,
+            selected = currentRoute == "exerciseNewton",
             onClick = { navController.navigate("exerciseNewton") }
         )
     }

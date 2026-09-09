@@ -86,7 +86,8 @@ fun PasoSecante(navController: NavHostController) {
 
 @Composable
 fun Drawer(menuItems: List<DestinosSecante>, navController: NavHostController) {
-    Column {
+    com.example.mathsus_ia.ui.features.GlobalDrawerContent(navController)
+    /* Column {
         Image(
             painterResource(id = R.drawable.menu_lateral),
             contentDescription = "Menú de opciones",
@@ -103,7 +104,7 @@ fun Drawer(menuItems: List<DestinosSecante>, navController: NavHostController) {
         menuItems.forEach { item ->
             DrawerItem(item = item, navController = navController)
         }
-    }
+    } */
 }
 
 @Composable

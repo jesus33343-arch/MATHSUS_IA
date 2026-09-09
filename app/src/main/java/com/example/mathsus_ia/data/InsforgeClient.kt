@@ -59,6 +59,22 @@ suspend fun submitFeedback(feedback: FeedbackSubmission) {
         .execute<FeedbackSubmission>()
 }
 
+@Serializable
+data class IdeaRequestSubmission(
+    val audience: String,
+    val institution: String? = null,
+    @SerialName("contact_email") val contactEmail: String? = null,
+    val idea: String,
+    @SerialName("app_version") val appVersion: String? = null
+)
+
+suspend fun submitIdeaRequest(request: IdeaRequestSubmission) {
+    InsforgeClient.client.database
+        .from("idea_requests")
+        .insertTyped(listOf(request))
+        .execute<IdeaRequestSubmission>()
+}
+
 suspend fun submitAiResponseReport(report: AiResponseReportSubmission) {
     InsforgeClient.client.database
         .from("ai_response_reports")

@@ -1,4 +1,5 @@
 package com.example.mathsus_ia.ui.features
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,18 +21,29 @@ import androidx.compose.material3.*
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.navigation.NavHostController
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.StyledPlayerView
+import com.example.mathsus_ia.data.IdeaRequestSubmission
+import com.example.mathsus_ia.data.submitIdeaRequest
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -158,6 +170,7 @@ fun Information(navController: NavHostController) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
         ) {
             VideoPlayer()
         }
@@ -317,7 +330,7 @@ fun Information(navController: NavHostController) {
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = "https://github.com/JesusGurrute/MATHSUS",
+            text = "https://github.com/jesus33343-arch/MATHSUS_IA",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -339,7 +352,57 @@ fun Information(navController: NavHostController) {
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+        IdeaRequestSection()
+        Spacer(modifier = Modifier.height(24.dp))
     }
+}
+
+@Composable
+private fun IdeaRequestSection() {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var audience by rememberSaveable { mutableStateOf("estudiante") }
+    var institution by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var idea by rememberSaveable { mutableStateOf("") }
+    var sending by remember { mutableStateOf(false) }
+    var sent by remember { mutableStateOf(false) }
+
+    SectionTitle("¿Tienes una idea?")
+    Spacer(modifier = Modifier.height(8.dp))
+    BodyText("¿Te gustaría llevar más matemáticas en el bolsillo o crear una aplicación como MATHSUS? Cuéntanos tu idea con el mayor detalle posible. El equipo la estudiará y podremos contactarte para explorarla o cotizar su desarrollo.")
+    Spacer(modifier = Modifier.height(12.dp))
+    Text("¿Quién eres?", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        listOf("estudiante" to "Estudiante", "docente" to "Docente", "otro" to "Otro").forEach { (value, label) ->
+            Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                RadioButton(selected = audience == value, onClick = { audience = value })
+                Text(label, style = MaterialTheme.typography.labelSmall)
+            }
+        }
+    }
+    OutlinedTextField(value = institution, onValueChange = { if (it.length <= 200) institution = it }, label = { Text("Universidad o institución (opcional)") }, singleLine = true, modifier = Modifier.fillMaxWidth())
+    OutlinedTextField(value = email, onValueChange = { if (it.length <= 320) email = it }, label = { Text("Correo para contactarte (opcional)") }, singleLine = true, modifier = Modifier.fillMaxWidth(), keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Email))
+    OutlinedTextField(value = idea, onValueChange = { if (it.length <= 4000) idea = it }, label = { Text("Describe tu idea") }, minLines = 5, modifier = Modifier.fillMaxWidth())
+    Spacer(modifier = Modifier.height(8.dp))
+    Button(enabled = !sending && idea.trim().length >= 20, onClick = {
+        sending = true
+        scope.launch {
+            try {
+                submitIdeaRequest(IdeaRequestSubmission(audience, institution.trim().ifBlank { null }, email.trim().ifBlank { null }, idea.trim(), io.github.jesusgurrute.mathsus_ia.BuildConfig.VERSION_NAME))
+                sent = true
+                institution = ""
+                email = ""
+                idea = ""
+                Toast.makeText(context, "¡Gracias! Recibimos tu idea.", Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+                Toast.makeText(context, "No se pudo enviar. Revisa tu conexión.", Toast.LENGTH_LONG).show()
+            } finally { sending = false }
+        }
+    }, modifier = Modifier.fillMaxWidth()) {
+        Text(if (sending) "Enviando…" else if (sent) "Enviar otra idea" else "Enviar mi idea")
+    }
+    Text("El correo es opcional y solo se usará si necesitamos contactarte sobre tu propuesta.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
 }
 
 @Composable
@@ -381,12 +444,13 @@ private fun UsageItem(title: String, body: String) {
 @Composable
 fun VideoPlayer() {
     val context = LocalContext.current
-    val videoUrl = "https://drive.google.com/uc?export=download&id=1Epp9sf2tpYmbQ00Fwb2GXwB8dktIFC9D"
+    val videoUrl = "https://drive.usercontent.google.com/download?id=1Epp9sf2tpYmbQ00Fwb2GXwB8dktIFC9D&export=download&confirm=t"
 
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(videoUrl))
             prepare()
+            playWhenReady = true
         }
     }
 
@@ -400,6 +464,11 @@ fun VideoPlayer() {
         factory = { ctx ->
             StyledPlayerView(ctx).apply {
                 player = exoPlayer
+                useController = true
+                controllerAutoShow = false
+                setShowBuffering(StyledPlayerView.SHOW_BUFFERING_WHEN_PLAYING)
+                setKeepContentOnPlayerReset(true)
+                setResizeMode(com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FIT)
             }
         },
         modifier = Modifier

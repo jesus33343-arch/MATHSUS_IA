@@ -70,7 +70,8 @@ fun PasoFalsi(navController: NavHostController) {
 
 @Composable
 fun DrawerFalsi(menuItems: List<DestinosFalsi>, navController: NavHostController) {
-    Column {
+    com.example.mathsus_ia.ui.features.GlobalDrawerContent(navController)
+    /* Column {
         Image(
             painterResource(id = R.drawable.menu_lateral),
             contentDescription = "Menú de opciones",
@@ -87,7 +88,7 @@ fun DrawerFalsi(menuItems: List<DestinosFalsi>, navController: NavHostController
         menuItems.forEach { item ->
             DrawerItemFalsi(item = item, navController = navController)
         }
-    }
+    } */
 }
 
 @Composable

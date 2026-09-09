@@ -27,7 +27,7 @@ import io.github.jesusgurrute.mathsus_ia.R
 
 
 @Composable
-fun ExerciseBisection(navController: NavHostController) {
+fun LegacyExerciseBisection(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navigationItems = listOf(
@@ -59,7 +59,7 @@ fun ExerciseBisection(navController: NavHostController) {
                             .fillMaxWidth()
                             .verticalScroll(rememberScrollState())
                     ) {
-                        ExerBisection()
+                        LegacyExerBisection()
                     }
                 }
             },
@@ -69,7 +69,7 @@ fun ExerciseBisection(navController: NavHostController) {
 }
 
 @Composable
-fun ExerBisection() {
+fun LegacyExerBisection() {
     Column(
         modifier = Modifier
             .fillMaxSize()

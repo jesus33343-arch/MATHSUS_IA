@@ -83,7 +83,8 @@ fun PasoNewton(navController: NavHostController) {
 
 @Composable
 fun DrawerNewton(menuItems: List<DestinosNewton>, navController: NavHostController) {
-    Column {
+    com.example.mathsus_ia.ui.features.GlobalDrawerContent(navController)
+    /* Column {
         Image(
             painterResource(id = R.drawable.menu_lateral),
             contentDescription = "Menú de opciones",
@@ -100,7 +101,7 @@ fun DrawerNewton(menuItems: List<DestinosNewton>, navController: NavHostControll
         menuItems.forEach { item ->
             DrawerItemNewton(item = item, navController = navController)
         }
-    }
+    } */
 }
 
 @Composable

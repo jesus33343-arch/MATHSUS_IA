@@ -83,7 +83,8 @@ fun PasoBisection(navController: NavHostController) {
 
 @Composable
 fun DrawerBisection(menuItems: List<DestinosBisection>, navController: NavHostController) {
-    Column {
+    com.example.mathsus_ia.ui.features.GlobalDrawerContent(navController)
+    /* Column {
         Image(
             painterResource(id = R.drawable.menu_lateral),
             contentDescription = "Menú de opciones",
@@ -100,7 +101,7 @@ fun DrawerBisection(menuItems: List<DestinosBisection>, navController: NavHostCo
         menuItems.forEach { item ->
             DrawerItemBisection(item = item, navController = navController)
         }
-    }
+    } */
 }
 
 @Composable

@@ -29,7 +29,7 @@ import com.example.mathsus.ui.features.nav_menu_secante.TopBar
 import com.example.mathsus_ia.ui.features.BottomNavBarFalsi
 
 @Composable
-fun ExerciseFalsi(navController: NavHostController){
+fun LegacyExerciseFalsi(navController: NavHostController){
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navigationItems = listOf(
@@ -62,7 +62,7 @@ fun ExerciseFalsi(navController: NavHostController){
                             .fillMaxWidth()
                             .verticalScroll(rememberScrollState())
                     ) {
-                        ExerFalsi()
+                        LegacyExerFalsi()
                     }
                 }
             },
@@ -72,7 +72,7 @@ fun ExerciseFalsi(navController: NavHostController){
 }
 
 @Composable
-fun ExerFalsi() {
+fun LegacyExerFalsi() {
     Column(
         modifier = Modifier
             .fillMaxSize()
