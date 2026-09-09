@@ -40,6 +40,26 @@ suspend fun askMathsusAi(prompt: String, history: List<AiChatTurn> = emptyList()
 }
 
 @Serializable
+data class DrawFunctionRequest(
+    @SerialName("image_data") val imageData: String,
+    val method: String
+)
+
+@Serializable
+data class DrawFunctionResponse(
+    val expression: String? = null,
+    val model: String? = null,
+    val error: String? = null
+)
+
+suspend fun interpretDrawnFunction(imageData: String, method: String): DrawFunctionResponse {
+    return InsforgeClient.client.functions.invoke(
+        slug = "mathsus-interpret-function",
+        body = DrawFunctionRequest(imageData, method)
+    )
+}
+
+@Serializable
 data class FeedbackSubmission(
     val rating: Int? = null,
     val category: String,

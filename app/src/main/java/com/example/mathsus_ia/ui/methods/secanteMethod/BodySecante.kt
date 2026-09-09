@@ -36,6 +36,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -77,13 +78,14 @@ import java.util.Locale
 
 
 @Composable
-fun BodySecante() {
+fun BodySecante(initialFunction: String = "") {
     val colorScheme = MaterialTheme.colorScheme
     val viewModel: GraphViewModel = viewModel()
     val showGraph = remember { mutableStateOf(false) }
     //val wallSecante = "https://kodular-community.s3.dualstack.eu-west-1.amazonaws.com/original/3X/c/e/ce82ada4d9e8591f01abefebfab0dba4a8228eee.png"
 
     val f = rememberSaveable { mutableStateOf("") }
+    LaunchedEffect(initialFunction) { if (initialFunction.isNotBlank()) f.value = initialFunction }
     val a = rememberSaveable { mutableStateOf("") }
     val b = rememberSaveable { mutableStateOf("") }
     val x2 = rememberSaveable { mutableStateOf("") }

@@ -62,6 +62,8 @@ fun BisectionScreen(navController: NavHostController) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var showHelpDialog by remember { mutableStateOf(false) }
+    var showDrawDialog by remember { mutableStateOf(false) }
+    var drawnExpression by remember { mutableStateOf("") }
     val navigationItems = listOf(
         DestinosBisection.Home,
         DestinosBisection.StepBisectionScreen,
@@ -82,7 +84,7 @@ fun BisectionScreen(navController: NavHostController) {
                     title = "Método de Bisección",
                     scope = scope,
                     drawerState = drawerState,
-                    actions = { BisectionTopBarActions(context, onHelpClick = { showHelpDialog = true }) }
+                    actions = { BisectionTopBarActionsV2(onHelpClick = { showHelpDialog = true }, onDrawClick = { showDrawDialog = true }) }
                 )
             },
             content = { padding ->
@@ -100,7 +102,7 @@ fun BisectionScreen(navController: NavHostController) {
                             .verticalScroll(rememberScrollState())
                     ) {
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            BodyBisection()
+                            BodyBisection(initialFunction = drawnExpression)
                         }
                     }
                 }
@@ -111,6 +113,20 @@ fun BisectionScreen(navController: NavHostController) {
 
     if (showHelpDialog) {
         SymbolHelpDialog(onDismiss = { showHelpDialog = false })
+    }
+    if (showDrawDialog) {
+        DrawFunctionDialog(method = "Biseccion", onDismiss = { showDrawDialog = false }) { expression ->
+            drawnExpression = expression
+            Toast.makeText(context, "Funcion interpretada y copiada: $expression", Toast.LENGTH_LONG).show()
+        }
+    }
+}
+
+@Composable
+private fun BisectionTopBarActionsV2(onHelpClick: () -> Unit, onDrawClick: () -> Unit) {
+    IconButton(onClick = onHelpClick) { Text("?", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp) }
+    IconButton(onClick = onDrawClick) {
+        Icon(imageVector = Icons.Default.Edit, contentDescription = "Dibujar funcion e interpretar con IA", tint = Color.White)
     }
 }
 

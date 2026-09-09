@@ -62,6 +62,8 @@ fun NewtonScreen(navController: NavHostController) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var showHelpDialog by remember { mutableStateOf(false) }
+    var showDrawDialog by remember { mutableStateOf(false) }
+    var drawnExpression by remember { mutableStateOf("") }
     val navigationItems = listOf(
         DestinosNewton.Home,
         DestinosNewton.StepNewtonScreen,
@@ -82,7 +84,7 @@ fun NewtonScreen(navController: NavHostController) {
                     title = "Método de Newton - Raphson",
                     scope = scope,
                     drawerState = drawerState,
-                    actions = { NewtonTopBarActions(context, onHelpClick = { showHelpDialog = true }) }
+                    actions = { NewtonTopBarActionsV2(onHelpClick = { showHelpDialog = true }, onDrawClick = { showDrawDialog = true }) }
                 )
             },
             content = { padding ->
@@ -100,7 +102,7 @@ fun NewtonScreen(navController: NavHostController) {
                             .verticalScroll(rememberScrollState())
                     ) {
                         Box(modifier = Modifier.fillMaxWidth()) {
-                            BodyNewtonRaphson()
+                            BodyNewtonRaphson(initialFunction = drawnExpression)
                         }
                     }
                 }
@@ -111,6 +113,20 @@ fun NewtonScreen(navController: NavHostController) {
 
     if (showHelpDialog) {
         SymbolHelpDialog(onDismiss = { showHelpDialog = false })
+    }
+    if (showDrawDialog) {
+        DrawFunctionDialog(method = "Newton-Raphson", onDismiss = { showDrawDialog = false }) { expression ->
+            drawnExpression = expression
+            Toast.makeText(context, "Funcion interpretada y copiada: $expression", Toast.LENGTH_LONG).show()
+        }
+    }
+}
+
+@Composable
+private fun NewtonTopBarActionsV2(onHelpClick: () -> Unit, onDrawClick: () -> Unit) {
+    IconButton(onClick = onHelpClick) { Text("?", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp) }
+    IconButton(onClick = onDrawClick) {
+        Icon(imageVector = Icons.Default.Edit, contentDescription = "Dibujar funcion e interpretar con IA", tint = Color.White)
     }
 }
 

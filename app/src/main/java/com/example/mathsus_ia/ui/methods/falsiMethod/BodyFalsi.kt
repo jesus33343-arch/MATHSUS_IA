@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -58,9 +59,10 @@ import io.github.jesusgurrute.mathsus_ia.R
 import kotlin.math.abs
 
 @Composable
-fun BodyFalsi() {
+fun BodyFalsi(initialFunction: String = "") {
     val colorScheme = MaterialTheme.colorScheme
     val funcion = rememberSaveable { mutableStateOf("") }
+    LaunchedEffect(initialFunction) { if (initialFunction.isNotBlank()) funcion.value = initialFunction }
     val a = rememberSaveable { mutableStateOf("") }
     val b = rememberSaveable { mutableStateOf("") }
     val MaxIter = rememberSaveable { mutableStateOf("") }
